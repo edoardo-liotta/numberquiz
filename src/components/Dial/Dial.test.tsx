@@ -1,10 +1,21 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import {act, fireEvent, render, waitFor} from '@testing-library/react';
 import Dial from './Dial';
+import * as serviceApi from '../../api/service-api'
+import {ApiResponse} from '../../api/service-api'
 
 describe('Dial component', () => {
+    beforeEach(() => {
+        jest.spyOn(serviceApi, 'sendAnswer').mockImplementation(() => {
+            return new Promise<ApiResponse>((resolve) => {
+                console.log('mocked sendAnswer')
+                resolve({status: 200});
+            });
+        });
+    });
+
     it('should render with initial value 0', () => {
-        const { getByText } = render(<Dial text={"Header text"} footerText={"Footer text"}/>);
+        const {getByText} = render(<Dial text={"Header text"} footerText={"Footer text"} />);
         const valueElement = getByText('0');
         expect(valueElement).toBeInTheDocument();
         const headerElement = getByText('Header text');
@@ -14,7 +25,7 @@ describe('Dial component', () => {
     });
 
     it('should increment value when the + button is clicked', () => {
-        const { getByText } = render(<Dial />);
+        const {getByText} = render(<Dial />);
         const addButton = getByText('+');
         fireEvent.click(addButton);
         const valueElement = getByText('1');
@@ -22,7 +33,7 @@ describe('Dial component', () => {
     });
 
     it('should decrement value when the - button is clicked', () => {
-        const { getByText } = render(<Dial />);
+        const {getByText} = render(<Dial />);
         const addButton = getByText('+');
         fireEvent.click(addButton);
         fireEvent.click(addButton);
@@ -33,15 +44,15 @@ describe('Dial component', () => {
     });
 
     it('should not decrement value below 0', () => {
-        const { getByText } = render(<Dial />);
+        const {getByText} = render(<Dial />);
         const subtractButton = getByText('-');
         fireEvent.click(subtractButton);
         const valueElement = getByText('0');
         expect(valueElement).toBeInTheDocument();
     });
 
-    it('should toggle disabling of + and - buttons when the submit button is clicked', () => {
-        const { getByText } = render(<Dial />);
+    it('should only disable + and - buttons when the submit button is clicked', () => {
+        const {getByText} = render(<Dial />);
         const submitButton = getByText('Conferma');
         const addButton = getByText('+');
         const subtractButton = getByText('-');
@@ -51,8 +62,36 @@ describe('Dial component', () => {
         expect(subtractButton).toBeDisabled();
 
         fireEvent.click(submitButton);
-        expect(addButton).not.toBeDisabled();
-        expect(subtractButton).not.toBeDisabled();
+        expect(addButton).toBeDisabled();
+        expect(subtractButton).toBeDisabled();
     });
 
+    it('should send the value to the server when the submit button is clicked', () => {
+        const {getByText} = render(<Dial />);
+        const addButton = getByText('+');
+        const submitButton = getByText('Conferma');
+
+        fireEvent.click(addButton);
+        fireEvent.click(submitButton);
+
+        expect(serviceApi.sendAnswer).toHaveBeenCalledWith(1);
+    });
+
+    it('should restore the submit button if something occurred when sending data', async () => {
+        jest.spyOn(serviceApi, 'sendAnswer').mockImplementation(() => {
+            return Promise.reject()
+        });
+
+        const component = render(<Dial />);
+        const addButton = component.getByText('+');
+        const submitButton = component.getByText('Conferma');
+
+        await waitFor(() => act(() => {
+                fireEvent.click(addButton);
+                fireEvent.click(submitButton);
+            })
+        );
+
+        expect(addButton).not.toBeDisabled();
+    });
 });

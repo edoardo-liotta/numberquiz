@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import './Dial.css'; // Assuming the CSS file is named Dial.css and placed in the same directory
+import './Dial.css';
+import {sendAnswer} from "../../api/service-api";
 
 interface DialProps {
     text?: string;
@@ -18,21 +19,29 @@ const Dial: React.FC<DialProps> = ({text, footerText}) => {
         }
     };
 
-    const handleToggleDisable = () => {
-        setIsDisabled((prevValue) => !prevValue);
+    const triggerConfirmAnswer = () => {
+        if (!isDisabled) {
+            setIsDisabled(true);
+            sendAnswer(value).then(r => {
+                console.log("Answer sent successfully")
+            })
+                .catch(e => {
+                    setIsDisabled(false)
+                })
+        }
     };
 
     return (
         <div className="container">
             <div className={"dial-container"}>
-            <h1 className="header-text">{text}</h1>
+                <h1 className="header-text">{text}</h1>
                 <div className="dial">
                     <div className="button-row">
                         <button onClick={() => handleDialTurn('counter-clockwise')} disabled={isDisabled}>-</button>
                         <button className={"value"}>{value}</button>
                         <button onClick={() => handleDialTurn('clockwise')} disabled={isDisabled}>+</button>
                     </div>
-                    <button className={"submit-button"} onClick={handleToggleDisable}>Conferma</button>
+                    <button className={"submit-button"} onClick={triggerConfirmAnswer}>Conferma</button>
                 </div>
                 <h3 className={"footer-text"}>{footerText}</h3>
             </div>
