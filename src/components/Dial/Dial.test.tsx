@@ -24,6 +24,17 @@ describe('Dial component', () => {
         expect(footerElement).toBeInTheDocument();
     });
 
+    it('should render disabled buttons when instructed to do so', () => {
+        const {getByText} = render(<Dial isDisabled={true} text={"Header text"} footerText={"Footer text"} />);
+
+        const addButton = getByText('+');
+        const subtractButton = getByText('-');
+        const submitButton = getByText('Conferma');
+        expect(addButton).toBeDisabled();
+        expect(subtractButton).toBeDisabled();
+        expect(submitButton).toBeDisabled();
+    });
+
     it('should increment value when the + button is clicked', () => {
         const {getByText} = render(<Dial />);
         const addButton = getByText('+');
@@ -51,22 +62,18 @@ describe('Dial component', () => {
         expect(valueElement).toBeInTheDocument();
     });
 
-    it('should only disable + and - buttons when the submit button is clicked', () => {
-        const {getByText} = render(<Dial />);
-        const submitButton = getByText('Conferma');
+    it('should trigger the callback function when submit button is clicked', () => {
+        const mockCallback = jest.fn();
+        const {getByText} = render(<Dial onConfirmAnswer={mockCallback} />);
         const addButton = getByText('+');
-        const subtractButton = getByText('-');
+        const submitButton = getByText('Conferma');
 
+        fireEvent.click(addButton);
         fireEvent.click(submitButton);
-        expect(addButton).toBeDisabled();
-        expect(subtractButton).toBeDisabled();
-
-        fireEvent.click(submitButton);
-        expect(addButton).toBeDisabled();
-        expect(subtractButton).toBeDisabled();
+        expect(mockCallback).toHaveBeenCalledWith({value: 1});
     });
 
-    it('should send the value to the server when the submit button is clicked', () => {
+    it.skip('should send the value to the server when the submit button is clicked', () => {
         const {getByText} = render(<Dial />);
         const addButton = getByText('+');
         const submitButton = getByText('Conferma');
@@ -77,7 +84,7 @@ describe('Dial component', () => {
         expect(serviceApi.sendAnswer).toHaveBeenCalledWith(1);
     });
 
-    it('should restore the submit button if something occurred when sending data', async () => {
+    it.skip('should restore the submit button if something occurred when sending data', async () => {
         jest.spyOn(serviceApi, 'sendAnswer').mockImplementation(() => {
             return Promise.reject()
         });

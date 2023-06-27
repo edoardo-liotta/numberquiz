@@ -2,14 +2,19 @@ import React, {useState} from 'react';
 import './Dial.css';
 import {sendAnswer} from "../../api/service-api";
 
+interface OnConfirmAnswerArgs {
+    value: number;
+}
+
 interface DialProps {
+    isDisabled?: boolean;
+    onConfirmAnswer?: (args: OnConfirmAnswerArgs) => void;
     text?: string;
     footerText?: string;
 }
 
-const Dial: React.FC<DialProps> = ({text, footerText}) => {
+const Dial: React.FC<DialProps> = (props) => {
     const [value, setValue] = useState<number>(0);
-    const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
     const handleDialTurn = (direction: 'clockwise' | 'counter-clockwise') => {
         if (direction === 'clockwise') {
@@ -20,36 +25,30 @@ const Dial: React.FC<DialProps> = ({text, footerText}) => {
     };
 
     const triggerConfirmAnswer = () => {
-        if (!isDisabled) {
-            setIsDisabled(true);
-            sendAnswer(value).then(r => {
-                console.log("Answer sent successfully")
-            })
-                .catch(e => {
-                    setIsDisabled(false)
-                })
-        }
+        props.onConfirmAnswer && props.onConfirmAnswer({value})
     };
 
     return (
         <div className="container">
             <div className={"dial-container"}>
-                <h1 className="header-text">{text}</h1>
+                <h1 className="header-text">{props.text}</h1>
                 <div className="dial">
                     <div className="button-row">
-                        <button onClick={() => handleDialTurn('counter-clockwise')} disabled={isDisabled}>-</button>
+                        <button onClick={() => handleDialTurn('counter-clockwise')} disabled={props.isDisabled}>-</button>
                         <button className={"value"}>{value}</button>
-                        <button onClick={() => handleDialTurn('clockwise')} disabled={isDisabled}>+</button>
+                        <button onClick={() => handleDialTurn('clockwise')} disabled={props.isDisabled}>+</button>
                     </div>
-                    <button className={"submit-button"} onClick={triggerConfirmAnswer}>Conferma</button>
+                    <button className={"submit-button"} disabled={props.isDisabled} onClick={triggerConfirmAnswer}>Conferma</button>
                 </div>
-                <h3 className={"footer-text"}>{footerText}</h3>
+                <h3 className={"footer-text"}>{props.footerText}</h3>
             </div>
         </div>
     );
 };
 
 Dial.defaultProps = {
+    isDisabled: false,
+    onConfirmAnswer: () => {},
     text: 'Default Text',
     footerText: 'Default Footer Text'
 };
