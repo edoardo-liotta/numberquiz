@@ -7,6 +7,11 @@ export interface ApiResponse {
     status: number;
 }
 
+export const createSocketConnection = () => {
+    const url = new URL(getServiceUrl());
+    return new WebSocket(`${(url.protocol === "https:" ? "wss" : "ws")}://${url.host}/connect`);
+}
+
 export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
     return new Promise<ApiResponse>(() => {});
     // return fetch(`${(getServiceUrl())}/answer`, {
