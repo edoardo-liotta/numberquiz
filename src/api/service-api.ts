@@ -8,17 +8,18 @@ export interface ApiResponse {
 }
 
 export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
-    return fetch(`${(getServiceUrl())}/answer`, {
-        method: "POST",
-        body: JSON.stringify({answer}),
-        headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "any"
-        }
-    }).then(r => {
-        if (r.status >= 300) {
-            Promise.reject()
-        }
-        return new Promise<ApiResponse>(() => r.json())
-    })
+    return new Promise<ApiResponse>(() => {});
+    // return fetch(`${(getServiceUrl())}/answer`, {
+    //     method: "POST",
+    //     body: JSON.stringify({answer}),
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "ngrok-skip-browser-warning": "any"
+    //     }
+    // }).then(r => {
+    //     if (r.status >= 300) {
+    //         Promise.reject()
+    //     }
+    //     return new Promise<ApiResponse>(() => r.json())
+    // })
 };

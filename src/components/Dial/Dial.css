@@ -1,10 +1,10 @@
-.container {
+.dial-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     text-transform: uppercase;
 }
 
@@ -20,7 +20,7 @@
     text-transform: inherit;
 }
 
-.button-row {
+.dial-button-row {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -29,7 +29,7 @@
     text-transform: inherit;
 }
 
-.button-row > button {
+.dial-button-row > button {
     margin: 0 8px;
 }
 
@@ -60,7 +60,7 @@ button.value {
     color: black;
 }
 
-.submit-button {
+.dial-submit-button {
     width: 100%;
     height: 48px;
     font-size: 16px;
@@ -68,7 +68,7 @@ button.value {
     border-radius: 10px;
 }
 
-.header-text {
+.dial-header-text {
     border-color: #4caf50;
     border-radius: 10px;
     border-style: solid;
@@ -82,7 +82,7 @@ button.value {
     vertical-align: middle;
 }
 
-.footer-text {
+.dial-footer-text {
     border-color: cornflowerblue;
     border-radius: 10px;
     border-style: solid;
