@@ -11,14 +11,13 @@ describe('WebSocketClient', () => {
 
     beforeEach(() => {
         createSocketConnectionMock = jest.spyOn(serviceApi, 'createSocketConnection').mockImplementation(() => {
-            return new WebSocket('ws://localhost:8080/')
+            return new WebSocket('ws://WebSocketClient:8080/')
         });
 
         // Set up a mock WebSocket server
-        mockServer = new Server('ws://localhost:8080/', {mock: false});
-        mockServer.on('connection', socket => {
-            console.log("Connected to mock server");
-
+        mockServer = new Server('ws://WebSocketClient:8080/', {mock: false});
+        mockServer.on('connection', _ => {
+            console.log("Mock server received a connection");
         });
     });
 
@@ -27,6 +26,7 @@ describe('WebSocketClient', () => {
     });
 
     it('should update field value on receiving a message', async () => {
+        jest.useFakeTimers()
         const mockOnMessageReceived = jest.fn();
         // Render the component
         await act(() => {
@@ -35,10 +35,32 @@ describe('WebSocketClient', () => {
 
         await act(() => {
             mockServer.emit('message', mockMessage);
+            jest.advanceTimersByTime(1000);
         });
 
-
+        expect(createSocketConnectionMock).toHaveBeenCalledTimes(1);
+        expect(mockServer.clients().length).toBe(1);
         // Assert that the field value is updated
         expect(mockOnMessageReceived).toHaveBeenCalledWith(mockMessage);
+    });
+
+    it('should test reconnection up to 5 times', async () => {
+        jest.useFakeTimers()
+        // Render the component
+        await act(() => {
+            render(<WebSocketClient onMessageReceived={jest.fn()} />);
+        });
+
+        expect(createSocketConnectionMock).toHaveBeenCalledTimes(1);
+
+        for (let i = 0; i < 10; i++) {
+            await act(() => {
+                jest.advanceTimersByTime(1000);
+                mockServer.emit('error', mockMessage);
+                jest.advanceTimersByTime(100);
+            });
+
+            expect(createSocketConnectionMock).toHaveBeenCalledTimes((i + 1 <= 5 ? i + 1 : 5));
+        }
     });
 });

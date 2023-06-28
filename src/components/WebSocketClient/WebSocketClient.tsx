@@ -13,7 +13,7 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) =>
     const [failedReconnectAttempts, setFailedReconnectAttempts] = React.useState<number>(0);
     const [statusMessage, setStatusMessage] = React.useState<string>("Disconnected");
 
-    const connect = () => {
+    const connect = (failedAttempts: number) => {
         socketRef.current = createSocketConnection();
 
         // Handle connection open event
@@ -21,6 +21,7 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) =>
             console.log('WebSocket client connected');
             setStatusMessage("Connected");
             setFailedReconnectAttempts(0);
+            reconnectIntervalRef.current = null
         };
 
         // Handle incoming message event
@@ -29,8 +30,8 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) =>
         };
 
         socketRef.current.onerror = (event) => {
-            console.log("WebSocket error: " + event)
-            reconnect();
+            console.log("WebSocket error");
+            setFailedReconnectAttempts(failedAttempts + 1);
         };
     }
 
@@ -46,27 +47,21 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) =>
         }
     }
 
-    const reconnect = () => {
+    const reconnect = (failedAttempts: number) => {
         if (!reconnectIntervalRef.current) {
-            if (failedReconnectAttempts < maxFailedReconnectAttempts) {
-                setStatusMessage("Error. Reconnecting...")
-                setFailedReconnectAttempts(failedReconnectAttempts + 1);
-                reconnectIntervalRef.current = setInterval(() => {
-                    console.log('Attempting reconnection...');
-                    disconnect();
-                    connect();
-                }, reconnectDelay);
-            } else {
-                setStatusMessage("Error. Disconnected.")
-                console.log('Maximum number of failed reconnection attempts reached');
-            }
+            setStatusMessage("Error. Reconnecting...")
+            reconnectIntervalRef.current = setInterval(() => {
+                console.log('Attempting reconnection...');
+                disconnect();
+                connect(failedAttempts);
+            }, reconnectDelay);
         }
     }
 
     useEffect(() => {
         setStatusMessage("Connecting...");
         // Create a new WebSocket connection
-        connect();
+        connect(0);
 
         // Clean up on component unmount
         return () => {
@@ -74,6 +69,15 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) =>
             disconnect();
         };
     }, [onMessageReceived]);
+
+    useEffect(() => {
+        if (failedReconnectAttempts > 0 && failedReconnectAttempts < maxFailedReconnectAttempts) {
+            reconnect(failedReconnectAttempts);
+        } else {
+            setStatusMessage("Error. Disconnected.")
+            console.log('Maximum number of failed reconnection attempts reached');
+        }
+    }, [failedReconnectAttempts]);
 
     return <div>WebSocket Client: {statusMessage}</div>;
 };
