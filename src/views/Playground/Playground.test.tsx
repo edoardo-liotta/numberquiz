@@ -15,7 +15,7 @@ describe('Playground view', () => {
     });
 
     it('should send the value to the server when the submit button is clicked', () => {
-        const {getByText} = render(<Playground />);
+        const {getByText} = render(<Playground initialQuestion={"Number Quiz"} />);
         const addButton = getByText('+');
         const submitButton = getByText('Conferma');
 
@@ -30,7 +30,7 @@ describe('Playground view', () => {
             return Promise.reject()
         });
 
-        const component = render(<Playground />);
+        const component = render(<Playground initialQuestion={"Number Quiz"} />);
         const addButton = component.getByText('+');
         const submitButton = component.getByText('Conferma');
 
@@ -40,5 +40,12 @@ describe('Playground view', () => {
         })
 
         expect(addButton).not.toBeDisabled();
+    });
+
+    it('should show the Idle screen when the is no set question', () => {
+        const component = render(<Playground />);
+        const idleText = component.getByText('In attesa di una domanda...');
+
+        expect(idleText).toBeInTheDocument();
     });
 });
