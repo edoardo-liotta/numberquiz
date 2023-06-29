@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {createSocketConnection} from "../../api/service-api";
+import './WebSocketClient.css';
 
 interface WebSocketClientProps {
     onMessageReceived: (message: string) => void;
@@ -79,7 +80,7 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) =>
         }
     }, [failedReconnectAttempts]);
 
-    return <div>WebSocket Client: {statusMessage}</div>;
+    return <div id={"websocketclient-status"}>WebSocket Client: {statusMessage}</div>;
 };
 
 export default WebSocketClient;
