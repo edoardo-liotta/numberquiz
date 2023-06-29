@@ -1,17 +1,14 @@
 import React from 'react';
-import {act, fireEvent, render, waitFor} from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
 import Dial from './Dial';
-import * as serviceApi from '../../api/service-api'
 
 describe('Dial component', () => {
     it('should render with initial value 0', () => {
-        const {getByText} = render(<Dial text={"Header text"} footerText={"Footer text"} />);
+        const {getByText} = render(<Dial text={"Header text"} />);
         const valueElement = getByText('0');
         expect(valueElement).toBeInTheDocument();
         const headerElement = getByText('Header text');
         expect(headerElement).toBeInTheDocument();
-        const footerElement = getByText('Footer text');
-        expect(footerElement).toBeInTheDocument();
     });
 
     it('should render disabled buttons when instructed to do so', () => {

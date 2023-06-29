@@ -6,10 +6,9 @@ interface DialProps {
     isDisabled?: boolean;
     onConfirmAnswer?: (args: OnConfirmAnswerProps) => void;
     text?: string;
-    footerText?: string;
 }
 
-const Dial: React.FC<DialProps> = (props) => {
+const Dial: React.FC<DialProps> = ({isDisabled, onConfirmAnswer, text}) => {
     const [value, setValue] = useState<number>(0);
 
     const handleDialTurn = (direction: 'clockwise' | 'counter-clockwise') => {
@@ -21,26 +20,25 @@ const Dial: React.FC<DialProps> = (props) => {
     };
 
     const triggerConfirmAnswer = () => {
-        props.onConfirmAnswer && props.onConfirmAnswer({value})
+        onConfirmAnswer && onConfirmAnswer({value})
     };
 
     return (
         <>
             <div className={"dial-container"}>
                 <div>
-                    <h1 className="dial-header-text">{props.text}</h1>
+                    <h1 className="dial-header-text">{text}</h1>
                     <div className="dial">
                         <div className="dial-button-row">
-                            <button onClick={() => handleDialTurn('counter-clockwise')} disabled={props.isDisabled}>-
+                            <button onClick={() => handleDialTurn('counter-clockwise')} disabled={isDisabled}>-
                             </button>
                             <button className={"value"}>{value}</button>
-                            <button onClick={() => handleDialTurn('clockwise')} disabled={props.isDisabled}>+</button>
+                            <button onClick={() => handleDialTurn('clockwise')} disabled={isDisabled}>+</button>
                         </div>
-                        <button className={"dial-submit-button"} disabled={props.isDisabled}
+                        <button className={"dial-submit-button"} disabled={isDisabled}
                                 onClick={triggerConfirmAnswer}>Conferma
                         </button>
                     </div>
-                    <h3 className={"dial-footer-text"}>{props.footerText}</h3>
                 </div>
             </div>
         </>
@@ -51,8 +49,7 @@ Dial.defaultProps = {
     isDisabled: false,
     onConfirmAnswer: () => {
     },
-    text: 'Default Text',
-    footerText: 'Default Footer Text'
+    text: 'Default Text'
 };
 
 export default Dial;
