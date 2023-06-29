@@ -3,8 +3,12 @@ import {ApiResponse} from "../../api/service-api";
 import {act, fireEvent, render} from "@testing-library/react";
 import React from "react";
 import Playground from "./Playground";
+import {Server, WebSocket} from "mock-socket";
 
 describe('Playground view', () => {
+    let mockServer: Server;
+    let createSocketConnectionMock: jest.SpyInstance;
+
     beforeEach(() => {
         jest.spyOn(serviceApi, 'sendAnswer').mockImplementation(() => {
             return new Promise<ApiResponse>((resolve) => {
@@ -12,6 +16,20 @@ describe('Playground view', () => {
                 resolve({status: 200});
             });
         });
+
+        createSocketConnectionMock = jest.spyOn(serviceApi, 'createSocketConnection').mockImplementation(() => {
+            return new WebSocket('ws://Playground:8080/')
+        });
+
+        // Set up a mock WebSocket server
+        mockServer = new Server('ws://Playground:8080/', {mock: false});
+        mockServer.on('connection', _ => {
+            console.log("Mock server received a connection");
+        });
+    });
+
+    afterEach(() => {
+        mockServer.stop();
     });
 
     it('should send the value to the server when the submit button is clicked', () => {
@@ -47,5 +65,32 @@ describe('Playground view', () => {
         const idleText = component.getByText('In attesa di una domanda...');
 
         expect(idleText).toBeInTheDocument();
+    });
+
+    it('should show the question when it is set', async () => {
+        jest.useFakeTimers()
+        const component = render(<Playground />);
+
+        await act(() => {
+            mockServer.emit('message', 'set-question|How many fingers are in a hand?');
+            jest.advanceTimersByTime(1000);
+        });
+
+        const questionText = component.getByText('How many fingers are in a hand?');
+        expect(questionText).toBeInTheDocument();
+    });
+
+    it('should clear the question when socket triggers clear', async () => {
+        jest.useFakeTimers()
+        const component = render(<Playground initialQuestion={"Initial question"} />);
+        let questionText = component.getByText('Initial question');
+        expect(questionText).toBeInTheDocument();
+
+        await act(() => {
+            mockServer.emit('message', 'clear-question');
+            jest.advanceTimersByTime(1000);
+        });
+
+        expect(questionText).not.toBeInTheDocument();
     });
 });

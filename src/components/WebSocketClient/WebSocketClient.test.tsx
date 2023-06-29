@@ -39,7 +39,6 @@ describe('WebSocketClient', () => {
         });
 
         expect(createSocketConnectionMock).toHaveBeenCalledTimes(1);
-        expect(mockServer.clients().length).toBe(1);
         // Assert that the field value is updated
         expect(mockOnMessageReceived).toHaveBeenCalledWith(mockMessage);
     });

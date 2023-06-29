@@ -6,6 +6,7 @@ import Idle from "../../components/Idle/Idle";
 
 interface PlaygroundProps {
     initialQuestion?: string;
+    isDebug?: boolean;
 }
 
 export interface OnConfirmAnswerProps {
@@ -21,6 +22,16 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
     const handleMessageReceived = (message: string) => {
         console.log("Message received: " + message)
         setLatestMessage(message)
+        if (message.startsWith("set-question|")) {
+            let newQuestion = (message.split("|"))[1];
+            if (newQuestion.length > 0) {
+                setCurrentQuestion(newQuestion)
+            } else {
+                setCurrentQuestion(undefined)
+            }
+        } else if (message.startsWith("clear-question")) {
+            setCurrentQuestion(undefined)
+        }
     }
 
     const onConfirmAnswer = (props: OnConfirmAnswerProps) => {
@@ -40,7 +51,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
     return <>
         <div className={"playground-container"}>
             {!currentQuestion && <>
-              <Idle/>
+              <Idle />
             </>}
             {currentQuestion && <>
               <Dial isDisabled={isDialDisabled} onConfirmAnswer={onConfirmAnswer} text={currentQuestion}
@@ -53,12 +64,13 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
                 </>}
             </>}
         </div>
-        <WebSocketClient onMessageReceived={handleMessageReceived} />
+        <WebSocketClient onMessageReceived={handleMessageReceived} isDebug={props.isDebug} latestMessage={latestMessage} />
     </>
 }
 
 Playground.defaultProps = {
-    initialQuestion: undefined
+    initialQuestion: undefined,
+    isDebug: true
 }
 
 export default Playground;

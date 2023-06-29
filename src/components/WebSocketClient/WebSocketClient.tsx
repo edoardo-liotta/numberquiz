@@ -3,10 +3,12 @@ import {createSocketConnection} from "../../api/service-api";
 import './WebSocketClient.css';
 
 interface WebSocketClientProps {
+    isDebug?: boolean;
+    latestMessage?: string;
     onMessageReceived: (message: string) => void;
 }
 
-const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) => {
+const WebSocketClient: React.FC<WebSocketClientProps> = ({isDebug, latestMessage, onMessageReceived}) => {
     const socketRef = useRef<WebSocket | null>(null);
     const reconnectIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const reconnectDelay = 500; // Delay in milliseconds before attempting reconnection
@@ -80,7 +82,17 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({onMessageReceived}) =>
         }
     }, [failedReconnectAttempts]);
 
-    return <div id={"websocketclient-status"}>WebSocket Client: {statusMessage}</div>;
+    return <>
+        <div id={"websocketclient-status"}>WebSocket Client: {statusMessage}</div>
+        {isDebug && latestMessage && <>
+          <div>Latest message: {latestMessage}</div>
+        </>}
+    </>;
 };
+
+WebSocketClient.defaultProps = {
+    isDebug: true,
+    latestMessage: undefined
+}
 
 export default WebSocketClient;
