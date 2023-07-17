@@ -12,7 +12,7 @@ describe('Dial component', () => {
     });
 
     it('should render disabled buttons when instructed to do so', () => {
-        const {getByText} = render(<Dial isDisabled={true} text={"Header text"} footerText={"Footer text"} />);
+        const {getByText} = render(<Dial isDisabled={true} text={"Header text"}/>);
 
         const addButton = getByText('+');
         const subtractButton = getByText('-');

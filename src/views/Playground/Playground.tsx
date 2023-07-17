@@ -54,8 +54,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
               <Idle />
             </>}
             {currentQuestion && <>
-              <Dial isDisabled={isDialDisabled} onConfirmAnswer={onConfirmAnswer} text={currentQuestion}
-                    footerText={""} />
+              <Dial isDisabled={isDialDisabled} onConfirmAnswer={onConfirmAnswer} text={currentQuestion} />
                 {error && <>
                   <div className={"playground-error"}>
                     Qualcosa è andato storto. Riprova.<br />
@@ -64,7 +63,8 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
                 </>}
             </>}
         </div>
-        <WebSocketClient onMessageReceived={handleMessageReceived} isDebug={props.isDebug} latestMessage={latestMessage} />
+        <WebSocketClient onMessageReceived={handleMessageReceived} isDebug={props.isDebug}
+                         latestMessage={latestMessage} />
     </>
 }
 

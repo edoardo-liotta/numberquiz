@@ -26,8 +26,8 @@ const Dial: React.FC<DialProps> = ({isDisabled, onConfirmAnswer, text}) => {
     return (
         <>
             <div className={"dial-container"}>
-                <div>
-                    <h1 className="dial-header-text">{text}</h1>
+                <div className={"dial-inner-container"}>
+                    <div className="dial-header-text"><h1>{text}</h1></div>
                     <div className="dial">
                         <div className="dial-button-row">
                             <button onClick={() => handleDialTurn('counter-clockwise')} disabled={isDisabled}>-
