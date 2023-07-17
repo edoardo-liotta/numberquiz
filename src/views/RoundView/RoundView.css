@@ -34,10 +34,11 @@
     border-color: darkblue;
 }
 
-#playground-start-button {
+.playground-status-button {
     border-radius: 10px;
     border-style: solid;
     height: auto;
+    margin-bottom: 8px;
     padding: 8px;
     width: 100%;
 }

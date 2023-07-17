@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {getRound, PlayerAnswer, RoundStatus} from "../../api/service-api";
+import {getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound} from "../../api/service-api";
 import Idle from "../../components/Idle/Idle";
 import './RoundView.css'
 
@@ -16,20 +16,30 @@ const RoundView: React.FC<RoundViewProps> = ({roundNumber}: RoundViewProps) => {
     const [answerVisible, setAnswerVisible] = React.useState<boolean>(false)
     const [error, setError] = React.useState<string | undefined>(undefined)
 
+    const setRoundState = (roundResponse: RoundResponse) => {
+        setRoundStatus(roundResponse.roundStatus)
+        setQuestion(roundResponse.question)
+        setAnswer(roundResponse.answer)
+        setProvidedAnswers(roundResponse.providedAnswers)
+    };
+
+
     useEffect(() => {
         setError(undefined)
-        getRound(roundNumber).then(roundResponse => {
-            setRoundStatus(roundResponse.roundStatus)
-            setQuestion(roundResponse.question)
-            setAnswer(roundResponse.answer)
-            setProvidedAnswers(roundResponse.providedAnswers)
-        }).catch(e => {
+        getRound(roundNumber).then(setRoundState).catch(e => {
             setError(e)
         })
     }, [roundNumber])
 
     const toggleAnswerVisible = () => {
         setAnswerVisible(!answerVisible)
+    }
+
+    const triggerStartRound = () => {
+        setError(undefined)
+        startRound(roundNumber).then(setRoundState).catch(e => {
+            setError(e)
+        })
     }
 
     return <div className={"playground-container"}>
@@ -46,7 +56,12 @@ const RoundView: React.FC<RoundViewProps> = ({roundNumber}: RoundViewProps) => {
         <div className={"playground-status-container"}>
             {roundStatus === RoundStatus.IDLE &&
                 <div>
-                  <button id={"playground-start-button"}>Inizia il round</button>
+                  <button id={"playground-start-button"} className={"playground-status-button"} onClick={triggerStartRound}>Inizia il round</button>
+                </div>
+            }
+            {roundStatus === RoundStatus.IN_PROGRESS &&
+                <div>
+                  <button id={"playground-end-button"} className={"playground-status-button"}>Termina il round</button>
                 </div>
             }
         </div>

@@ -1,6 +1,6 @@
 import * as serviceApi from "../../api/service-api";
 import {RoundResponse, RoundStatus} from "../../api/service-api";
-import {render, waitFor} from "@testing-library/react";
+import {act, fireEvent, render, waitFor} from "@testing-library/react";
 import React from "react";
 import RoundView from "./RoundView";
 
@@ -8,11 +8,25 @@ describe('Round view', () => {
     beforeEach(() => {
         jest.spyOn(serviceApi, 'getRound').mockImplementation(() => {
             return new Promise<RoundResponse>((resolve) => {
-                console.log('mocked sendAnswer')
+                console.log('mocked getRound')
                 resolve({
                     status: 200,
                     roundNumber: 1,
                     roundStatus: RoundStatus.IDLE,
+                    question: "Domanda",
+                    answer: 42,
+                    providedAnswers: []
+                });
+            });
+        });
+
+        jest.spyOn(serviceApi, 'startRound').mockImplementation(() => {
+            return new Promise<RoundResponse>((resolve) => {
+                console.log('mocked startRound')
+                resolve({
+                    status: 200,
+                    roundNumber: 1,
+                    roundStatus: RoundStatus.IN_PROGRESS,
                     question: "Domanda",
                     answer: 42,
                     providedAnswers: []
@@ -41,5 +55,22 @@ describe('Round view', () => {
         expect(serviceApi.getRound).toHaveBeenCalledWith(1);
 
         await waitFor(() => expect(getByText('Inizia il round')).toBeInTheDocument());
+    });
+
+    it('should start the round when clicking the button', async () => {
+        const {getByText} = render(<RoundView roundNumber={1} />);
+
+        await waitFor(() => {
+            getByText('Inizia il round')
+        })
+
+        const startRoundButton = getByText('Inizia il round')
+        await act(() => fireEvent.click(startRoundButton))
+
+        expect(serviceApi.startRound).toHaveBeenCalledWith(1);
+        await waitFor(() => expect(startRoundButton).not.toBeInTheDocument())
+
+        const endRoundButton = getByText('Termina il round')
+        expect(endRoundButton).toBeInTheDocument()
     });
 });

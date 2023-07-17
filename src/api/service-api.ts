@@ -60,3 +60,15 @@ export const getRound = async (roundNumber: number): Promise<RoundResponse> => {
             providedAnswers: []
         });
 }
+
+export const startRound = async (roundNumber: number): Promise<RoundResponse> => {
+    return Promise.resolve(
+        {
+            status: 200,
+            roundNumber: roundNumber,
+            roundStatus: RoundStatus.IN_PROGRESS,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: []
+        });
+}
