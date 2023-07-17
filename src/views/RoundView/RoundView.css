@@ -43,6 +43,27 @@
     width: 100%;
 }
 
+.playground-players-container {
+    border-radius: 10px;
+    border-style: solid;
+    display: flex;
+    flex-direction: column;
+    padding-left: 8px;
+    padding-right: 8px;
+    width: 90%;
+}
+
+.playground-player {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-block: 8px;
+}
+
+.playground-player:not(:last-child) {
+    border-bottom-style: dashed;
+}
+
 .playground-error {
     color: darkred;
 }

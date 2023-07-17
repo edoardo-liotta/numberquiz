@@ -1,37 +1,36 @@
 import * as serviceApi from "../../api/service-api";
-import {RoundResponse, RoundStatus} from "../../api/service-api";
-import {act, fireEvent, render, waitFor} from "@testing-library/react";
+import {RoundStatus} from "../../api/service-api";
+import {fireEvent, render, waitFor} from "@testing-library/react";
 import React from "react";
 import RoundView from "./RoundView";
 
 describe('Round view', () => {
     beforeEach(() => {
-        jest.spyOn(serviceApi, 'getRound').mockImplementation(() => {
-            return new Promise<RoundResponse>((resolve) => {
-                console.log('mocked getRound')
-                resolve({
-                    status: 200,
-                    roundNumber: 1,
-                    roundStatus: RoundStatus.IDLE,
-                    question: "Domanda",
-                    answer: 42,
-                    providedAnswers: []
-                });
-            });
+        jest.spyOn(serviceApi, 'getRound').mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.IDLE,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: []
         });
 
-        jest.spyOn(serviceApi, 'startRound').mockImplementation(() => {
-            return new Promise<RoundResponse>((resolve) => {
-                console.log('mocked startRound')
-                resolve({
-                    status: 200,
-                    roundNumber: 1,
-                    roundStatus: RoundStatus.IN_PROGRESS,
-                    question: "Domanda",
-                    answer: 42,
-                    providedAnswers: []
-                });
-            });
+        jest.spyOn(serviceApi, 'startRound').mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.IN_PROGRESS,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: []
+        });
+
+        jest.spyOn(serviceApi, 'endRound').mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.FINISHED,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: []
         });
 
         /*createSocketConnectionMock = jest.spyOn(serviceApi, 'createSocketConnection').mockImplementation(() => {
@@ -65,13 +64,33 @@ describe('Round view', () => {
         })
 
         const startRoundButton = getByText('Inizia il round')
-        await act(() => fireEvent.click(startRoundButton))
+        fireEvent.click(startRoundButton)
 
         expect(serviceApi.startRound).toHaveBeenCalledWith(1);
         await waitFor(() => expect(startRoundButton).not.toBeInTheDocument())
 
         const endRoundButton = getByText('Termina il round')
         expect(endRoundButton).toBeInTheDocument()
+    });
+
+    it('should end the round when clicking the button', async () => {
+        const {getByText} = render(<RoundView roundNumber={1} />);
+
+        await waitFor(() => {
+            getByText('Inizia il round')
+        })
+
+        const startRoundButton = getByText('Inizia il round')
+        fireEvent.click(startRoundButton)
+
+        expect(serviceApi.startRound).toHaveBeenCalledWith(1);
+        await waitFor(() => expect(startRoundButton).not.toBeInTheDocument())
+
+        const endRoundButton = getByText('Termina il round')
+        fireEvent.click(endRoundButton)
+
+        expect(serviceApi.endRound).toHaveBeenCalledWith(1);
+        await waitFor(() => expect(endRoundButton).not.toBeInTheDocument())
     });
 
     it('should fetch round status every second and print any provided answer when round is in progress', async () => {
@@ -109,11 +128,9 @@ describe('Round view', () => {
             }]
         });
         const {getByText} = render(<RoundView roundNumber={1} />);
-
         await waitFor(() => {
             getByText('Inizia il round')
         })
-
         expect(serviceApi.getRound).toHaveBeenCalledTimes(1);
         const startRoundButton = getByText('Inizia il round')
         fireEvent.click(startRoundButton)
@@ -123,5 +140,33 @@ describe('Round view', () => {
         expect(serviceApi.getRound).toHaveBeenCalledTimes(2);
         jest.advanceTimersByTime(1000)
         expect(serviceApi.getRound).toHaveBeenCalledTimes(3);
+        const endRoundButton = getByText('Termina il round')
+        fireEvent.click(endRoundButton)
+        await waitFor(() => getByText('Mostra i risultati'))
+        jest.advanceTimersByTime(1000)
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(3);
+        jest.advanceTimersByTime(1000)
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(3);
+    });
+
+    it('should render the provided answers', async () => {
+        jest.useFakeTimers()
+        jest.spyOn(serviceApi, 'getRound').mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.FINISHED,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: [{playerName: "Edoardo"}, {playerName: "Antonietta", providedAnswer: 10}]
+        })
+
+        const {getByText} = render(<RoundView roundNumber={1} />);
+        await waitFor(() => {
+            getByText('Mostra i risultati')
+        })
+        expect(getByText("Edoardo")).toBeInTheDocument()
+        expect(getByText("-")).toBeInTheDocument()
+        expect(getByText("Antonietta")).toBeInTheDocument()
+        expect(getByText("10")).toBeInTheDocument()
     });
 });

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound} from "../../api/service-api";
+import {endRound, getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound} from "../../api/service-api";
 import Idle from "../../components/Idle/Idle";
 import './RoundView.css'
 
@@ -30,6 +30,11 @@ const RoundView: React.FC<RoundViewProps> = ({roundNumber}: RoundViewProps) => {
                     })
                 }, 1000)
             }
+        } else {
+            if (fetchInterval.current !== null) {
+                clearInterval(fetchInterval.current)
+                fetchInterval.current = null
+            }
         }
     }
 
@@ -57,32 +62,56 @@ const RoundView: React.FC<RoundViewProps> = ({roundNumber}: RoundViewProps) => {
         })
     }
 
+    const triggerEndRound = () => {
+        setError(undefined)
+        endRound(roundNumber).then(setRoundState).catch(e => {
+            setError(e)
+        })
+    }
+
     return <div className={"playground-container"}>
         {!roundStatus &&
             <Idle />
         }
-        {question &&
-            <div className={"playground-question-container"}>
-              <div className={"playground-question"}>{question}</div>
-              <div className={"playground-answer"}
-                   onClick={toggleAnswerVisible}>{answerVisible ? answer : "???"}</div>
-            </div>
+        {question && <>
+          <div className={"playground-question-container"}>
+            <div className={"playground-question"}>{question}</div>
+            <div className={"playground-answer"}
+                 onClick={toggleAnswerVisible}>{answerVisible ? answer : "???"}</div>
+          </div>
+          <div className={"playground-status-container"}>
+              {roundStatus === RoundStatus.IDLE &&
+                  <div>
+                    <button id={"playground-start-button"} className={"playground-status-button"}
+                            onClick={triggerStartRound}>Inizia il round
+                    </button>
+                  </div>
+              }
+              {roundStatus === RoundStatus.IN_PROGRESS &&
+                  <div>
+                    <button id={"playground-end-button"} className={"playground-status-button"}
+                            onClick={triggerEndRound}>Termina il round
+                    </button>
+                  </div>
+              }
+              {roundStatus === RoundStatus.FINISHED &&
+                  <div>
+                    <button id={"playground-show-results-button"} className={"playground-status-button"}
+                            >Mostra i risultati
+                    </button>
+                  </div>
+              }
+          </div>
+          <div className={"playground-players-container"}>
+              {providedAnswers && providedAnswers.map(function (item) {
+                  return <div className={"playground-player"}>
+                      <div className={"playground-player-name"}>{item.playerName}</div>
+                      <div className={"playground-player-answer"}>{item.providedAnswer || "-"}</div>
+                  </div>
+              })}
+          </div>
+        </>
         }
-        <div className={"playground-status-container"}>
-            {roundStatus === RoundStatus.IDLE &&
-                <div>
-                  <button id={"playground-start-button"} className={"playground-status-button"}
-                          onClick={triggerStartRound}>Inizia il round
-                  </button>
-                </div>
-            }
-            {roundStatus === RoundStatus.IN_PROGRESS &&
-                <div>
-                  <button id={"playground-end-button"} className={"playground-status-button"}>Termina il round
-                  </button>
-                </div>
-            }
-        </div>
         {error && <div className={"error"}>Error: {error}</div>}
     </div>
 }
