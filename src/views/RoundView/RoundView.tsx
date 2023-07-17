@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound} from "../../api/service-api";
 import Idle from "../../components/Idle/Idle";
 import './RoundView.css'
@@ -15,20 +15,35 @@ const RoundView: React.FC<RoundViewProps> = ({roundNumber}: RoundViewProps) => {
     const [providedAnswers, setProvidedAnswers] = React.useState<PlayerAnswer[] | undefined>(undefined)
     const [answerVisible, setAnswerVisible] = React.useState<boolean>(false)
     const [error, setError] = React.useState<string | undefined>(undefined)
+    const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
     const setRoundState = (roundResponse: RoundResponse) => {
         setRoundStatus(roundResponse.roundStatus)
         setQuestion(roundResponse.question)
         setAnswer(roundResponse.answer)
         setProvidedAnswers(roundResponse.providedAnswers)
-    };
-
+        if (roundResponse.roundStatus === RoundStatus.IN_PROGRESS) {
+            if (fetchInterval.current === null) {
+                fetchInterval.current = setInterval(() => {
+                    getRound(roundNumber).then(setRoundState).catch(e => {
+                        setError(e)
+                    })
+                }, 1000)
+            }
+        }
+    }
 
     useEffect(() => {
         setError(undefined)
         getRound(roundNumber).then(setRoundState).catch(e => {
             setError(e)
         })
+        return () => {
+            if (fetchInterval.current !== null) {
+                clearInterval(fetchInterval.current);
+                fetchInterval.current = null;
+            }
+        }
     }, [roundNumber])
 
     const toggleAnswerVisible = () => {
@@ -56,12 +71,15 @@ const RoundView: React.FC<RoundViewProps> = ({roundNumber}: RoundViewProps) => {
         <div className={"playground-status-container"}>
             {roundStatus === RoundStatus.IDLE &&
                 <div>
-                  <button id={"playground-start-button"} className={"playground-status-button"} onClick={triggerStartRound}>Inizia il round</button>
+                  <button id={"playground-start-button"} className={"playground-status-button"}
+                          onClick={triggerStartRound}>Inizia il round
+                  </button>
                 </div>
             }
             {roundStatus === RoundStatus.IN_PROGRESS &&
                 <div>
-                  <button id={"playground-end-button"} className={"playground-status-button"}>Termina il round</button>
+                  <button id={"playground-end-button"} className={"playground-status-button"}>Termina il round
+                  </button>
                 </div>
             }
         </div>

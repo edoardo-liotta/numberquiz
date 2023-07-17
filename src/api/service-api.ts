@@ -22,8 +22,8 @@ export interface RoundResponse extends ApiResponse {
 }
 
 export interface PlayerAnswer {
-    playerId: string;
-    providedAnswer: number;
+    playerName: string;
+    providedAnswer?: number;
 }
 
 export const createSocketConnection = () => {

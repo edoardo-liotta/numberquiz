@@ -73,4 +73,55 @@ describe('Round view', () => {
         const endRoundButton = getByText('Termina il round')
         expect(endRoundButton).toBeInTheDocument()
     });
+
+    it('should fetch round status every second and print any provided answer when round is in progress', async () => {
+        jest.useFakeTimers()
+        jest.spyOn(serviceApi, 'getRound').mockResolvedValueOnce({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.IDLE,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: [{playerName: "Edoardo"}, {playerName: "Antonietta"}]
+        }).mockResolvedValueOnce({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.IN_PROGRESS,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: [{playerName: "Edoardo"}, {playerName: "Antonietta"}]
+        }).mockResolvedValueOnce({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.IN_PROGRESS,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: [{playerName: "Edoardo", providedAnswer: 10}, {playerName: "Antonietta"}]
+        }).mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.IN_PROGRESS,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: [{playerName: "Edoardo", providedAnswer: 10}, {
+                playerName: "Antonietta",
+                providedAnswer: 42
+            }]
+        });
+        const {getByText} = render(<RoundView roundNumber={1} />);
+
+        await waitFor(() => {
+            getByText('Inizia il round')
+        })
+
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(1);
+        const startRoundButton = getByText('Inizia il round')
+        fireEvent.click(startRoundButton)
+        await waitFor(() => expect(startRoundButton).not.toBeInTheDocument())
+
+        jest.advanceTimersByTime(1000)
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(2);
+        jest.advanceTimersByTime(1000)
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(3);
+    });
 });
