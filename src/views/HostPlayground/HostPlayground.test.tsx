@@ -2,9 +2,9 @@ import * as serviceApi from "../../api/service-api";
 import {RoundStatus} from "../../api/service-api";
 import {fireEvent, render, waitFor} from "@testing-library/react";
 import React from "react";
-import RoundView from "./RoundView";
+import HostPlayground from "./HostPlayground";
 
-describe('Round view', () => {
+describe('Host Playground component', () => {
     beforeEach(() => {
         jest.spyOn(serviceApi, 'getRound').mockResolvedValue({
             status: 200,
@@ -49,7 +49,7 @@ describe('Round view', () => {
     });*/
 
     it('should fetch the status information when loaded', async () => {
-        const {getByText} = render(<RoundView roundNumber={1} />);
+        const {getByText} = render(<HostPlayground />);
 
         expect(serviceApi.getRound).toHaveBeenCalledWith(1);
 
@@ -57,7 +57,7 @@ describe('Round view', () => {
     });
 
     it('should start the round when clicking the button', async () => {
-        const {getByText} = render(<RoundView roundNumber={1} />);
+        const {getByText} = render(<HostPlayground />);
 
         await waitFor(() => {
             getByText('Inizia il round')
@@ -74,7 +74,7 @@ describe('Round view', () => {
     });
 
     it('should end the round when clicking the button', async () => {
-        const {getByText} = render(<RoundView roundNumber={1} />);
+        const {getByText} = render(<HostPlayground />);
 
         await waitFor(() => {
             getByText('Inizia il round')
@@ -127,7 +127,7 @@ describe('Round view', () => {
                 providedAnswer: 42
             }]
         });
-        const {getByText} = render(<RoundView roundNumber={1} />);
+        const {getByText} = render(<HostPlayground />);
         await waitFor(() => {
             getByText('Inizia il round')
         })
@@ -160,7 +160,7 @@ describe('Round view', () => {
             providedAnswers: [{playerName: "Edoardo"}, {playerName: "Antonietta", providedAnswer: 10}]
         })
 
-        const {getByText} = render(<RoundView roundNumber={1} />);
+        const {getByText} = render(<HostPlayground />);
         await waitFor(() => {
             getByText('Mostra i risultati')
         })

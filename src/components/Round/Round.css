@@ -1,4 +1,4 @@
-.playground-container {
+.host-round-container {
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -7,7 +7,7 @@
     width: 100%;
 }
 
-.playground-question-container {
+.host-round-question-container {
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
     width: 100%;
 }
 
-.playground-question, .playground-answer {
+.host-round-question, .host-round-answer {
     border-radius: 10px;
     border-style: solid;
     border-width: 2px;
@@ -26,15 +26,15 @@
     width: 95%;
 }
 
-.playground-question {
+.host-round-question {
     border-color: #4caf50;
 }
 
-.playground-answer {
+.host-round-answer {
     border-color: darkblue;
 }
 
-.playground-status-button {
+.host-round-status-button {
     border-radius: 10px;
     border-style: solid;
     height: auto;
@@ -43,7 +43,7 @@
     width: 100%;
 }
 
-.playground-players-container {
+.host-round-players-container {
     border-radius: 10px;
     border-style: solid;
     display: flex;
@@ -53,17 +53,17 @@
     width: 90%;
 }
 
-.playground-player {
+.host-round-player {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding-block: 8px;
 }
 
-.playground-player:not(:last-child) {
+.host-round-player:not(:last-child) {
     border-bottom-style: dashed;
 }
 
-.playground-error {
+.host-round-error {
     color: darkred;
 }

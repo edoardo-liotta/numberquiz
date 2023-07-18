@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import RoundView from "./views/RoundView/RoundView";
+import HostPlayground from "./views/HostPlayground/HostPlayground";
 
 function HostApp() {
 
     return (
         <div className="App">
-            <RoundView roundNumber={1} />
+            <HostPlayground />
         </div>
     );
 }
