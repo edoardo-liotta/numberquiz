@@ -15,11 +15,11 @@ export interface OnConfirmAnswerProps {
 const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProps) => {
     const [error, setError] = React.useState<string | undefined>();
     const [roundNumber, setRoundNumber] = React.useState<number>(1);
-    const fetchInterval = useRef<NodeJS.Timeout | null>(null);
     const [roundStatus, setRoundStatus] = React.useState<RoundStatus | undefined>()
     const [question, setQuestion] = React.useState<string | undefined>(props.initialQuestion)
     const [answer, setAnswer] = React.useState<number | undefined>()
     const [providedAnswers, setProvidedAnswers] = React.useState<PlayerAnswer[]>([])
+    const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
     const setRoundState = (roundResponse: RoundResponse) => {
         setRoundStatus(roundResponse.roundStatus)
