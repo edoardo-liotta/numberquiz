@@ -40,14 +40,14 @@ const Round: React.FC<RoundProps> = ({
                   </button>
                 </div>
             }
-            {roundStatus === RoundStatus.IN_PROGRESS &&
+            {roundStatus === RoundStatus.STARTED &&
                 <div>
                   <button id={"host-round-end-button"} className={"host-round-status-button"}
                           onClick={onTriggerEndRound}>Termina il round
                   </button>
                 </div>
             }
-            {roundStatus === RoundStatus.FINISHED &&
+            {roundStatus === RoundStatus.STOPPED &&
                 <div>
                   <button id={"host-round-show-results-button"} className={"host-round-status-button"}
                   >Mostra i risultati

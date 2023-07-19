@@ -18,7 +18,7 @@ describe('Host Playground component', () => {
         jest.spyOn(serviceApi, 'startRound').mockResolvedValue({
             status: 200,
             roundNumber: 1,
-            roundStatus: RoundStatus.IN_PROGRESS,
+            roundStatus: RoundStatus.STARTED,
             question: "Domanda",
             answer: 42,
             providedAnswers: []
@@ -27,7 +27,7 @@ describe('Host Playground component', () => {
         jest.spyOn(serviceApi, 'endRound').mockResolvedValue({
             status: 200,
             roundNumber: 1,
-            roundStatus: RoundStatus.FINISHED,
+            roundStatus: RoundStatus.STOPPED,
             question: "Domanda",
             answer: 42,
             providedAnswers: []
@@ -105,21 +105,21 @@ describe('Host Playground component', () => {
         }).mockResolvedValueOnce({
             status: 200,
             roundNumber: 1,
-            roundStatus: RoundStatus.IN_PROGRESS,
+            roundStatus: RoundStatus.STARTED,
             question: "Domanda",
             answer: 42,
             providedAnswers: [{playerName: "Edoardo"}, {playerName: "Antonietta"}]
         }).mockResolvedValueOnce({
             status: 200,
             roundNumber: 1,
-            roundStatus: RoundStatus.IN_PROGRESS,
+            roundStatus: RoundStatus.STARTED,
             question: "Domanda",
             answer: 42,
             providedAnswers: [{playerName: "Edoardo", providedAnswer: 10}, {playerName: "Antonietta"}]
         }).mockResolvedValue({
             status: 200,
             roundNumber: 1,
-            roundStatus: RoundStatus.IN_PROGRESS,
+            roundStatus: RoundStatus.STARTED,
             question: "Domanda",
             answer: 42,
             providedAnswers: [{playerName: "Edoardo", providedAnswer: 10}, {
@@ -154,7 +154,7 @@ describe('Host Playground component', () => {
         jest.spyOn(serviceApi, 'getRound').mockResolvedValue({
             status: 200,
             roundNumber: 1,
-            roundStatus: RoundStatus.FINISHED,
+            roundStatus: RoundStatus.STOPPED,
             question: "Domanda",
             answer: 42,
             providedAnswers: [{playerName: "Edoardo"}, {playerName: "Antonietta", providedAnswer: 10}]

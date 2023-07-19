@@ -9,8 +9,9 @@ export interface ApiResponse {
 
 export enum RoundStatus {
     IDLE = "IDLE",
-    IN_PROGRESS = "IN_PROGRESS",
-    FINISHED = "FINISHED"
+    STARTED = "STARTED",
+    STOPPING = "STOPPING",
+    STOPPED = "STOPPED"
 }
 
 export interface RoundResponse extends ApiResponse {
@@ -66,7 +67,7 @@ export const startRound = async (roundNumber: number): Promise<RoundResponse> =>
         {
             status: 200,
             roundNumber: roundNumber,
-            roundStatus: RoundStatus.IN_PROGRESS,
+            roundStatus: RoundStatus.STARTED,
             question: "Domanda",
             answer: 42,
             providedAnswers: [{playerName: "Player 1", providedAnswer: 42},{playerName: "Player 2"}]
@@ -78,7 +79,7 @@ export const endRound = async (roundNumber: number): Promise<RoundResponse> => {
         {
             status: 200,
             roundNumber: roundNumber,
-            roundStatus: RoundStatus.FINISHED,
+            roundStatus: RoundStatus.STOPPED,
             question: "Domanda",
             answer: 42,
             providedAnswers: [{playerName: "Player 1", providedAnswer: 42},{playerName: "Player 2", providedAnswer: 10}]

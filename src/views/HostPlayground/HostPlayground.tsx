@@ -26,7 +26,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         setQuestion(roundResponse.question)
         setAnswer(roundResponse.answer)
         setProvidedAnswers(roundResponse.providedAnswers)
-        if (roundResponse.roundStatus === RoundStatus.IN_PROGRESS) {
+        if ([RoundStatus.STARTED, RoundStatus.STOPPING].includes(roundResponse.roundStatus)) {
             if (fetchInterval.current === null) {
                 fetchInterval.current = setInterval(() => {
                     getRound(roundNumber).then(setRoundState).catch(e => {
