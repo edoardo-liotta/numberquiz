@@ -27,8 +27,9 @@ const ScreenRound: React.FC<ScreenRoundProps> = ({
             <div className={"screen-round-question-container"}>
                 <div className={"screen-round-question"}>{roundStatus === RoundStatus.IDLE && <>Round {roundNumber}</>}
                     {isDisplayingQuestion && question}</div>
-                <div
+                {isDisplayingQuestion && <div
                     className={`screen-round-answer ${!isDisplayingAnswers && "hidden"}`}>{answer}</div>
+                }
             </div>
 
             <ul className={"screen-round-players-container"}>
