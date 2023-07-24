@@ -18,24 +18,28 @@ const ScreenRound: React.FC<ScreenRoundProps> = ({
                                                      answer,
                                                      providedAnswers,
                                                  }: ScreenRoundProps) => {
+
+
+    const isDisplayingQuestion = roundStatus !== RoundStatus.IDLE;
+    const isDisplayingAnswers = answer !== undefined && [RoundStatus.DISPLAYING_ANSWERS].includes(roundStatus);
     return <>
         <div className={"screen-round-container"}>
             <div className={"screen-round-question-container"}>
                 <div className={"screen-round-question"}>{roundStatus === RoundStatus.IDLE && <>Round {roundNumber}</>}
-                    {roundStatus !== RoundStatus.IDLE && question}</div>
-                {[RoundStatus.DISPLAYING_ANSWERS].includes(roundStatus) &&
-                    <div className={"screen-round-answer"}>{answer}</div>}
+                    {isDisplayingQuestion && question}</div>
+                <div
+                    className={`screen-round-answer ${!isDisplayingAnswers && "hidden"}`}>{answer}</div>
             </div>
 
             <ul className={"screen-round-players-container"}>
                 {providedAnswers && providedAnswers.map(function (item) {
                     return <li
                         key={item.playerName}
-                        className={`screen-round-player ${answer && item.providedAnswer && item.providedAnswer < answer && "under"} ${answer && item.providedAnswer && item.providedAnswer > answer && "over"}`}>
+                        className={`screen-round-player ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer < answer && "under") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer > answer && "over") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && "exact") || ""}`}>
                         <div
-                            className={"screen-round-player-name"}>{item.playerName}{answer && item.providedAnswer && item.providedAnswer === answer && " ⭐"}</div>
+                            className={"screen-round-player-name"}>{item.playerName}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && " ⭐"}</div>
                         <div
-                            className={"screen-round-player-answer"}>{!answer && item.providedAnswer && "✅"}{answer && item.providedAnswer && item.providedAnswer}</div>
+                            className={"screen-round-player-answer"}>{!isDisplayingAnswers && item.providedAnswer && "✅"}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer}</div>
                     </li>
                 })}
             </ul>

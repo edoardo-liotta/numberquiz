@@ -20,21 +20,24 @@
     border-radius: 10px;
     border-style: solid;
     border-width: 2px;
+    font-size: 2em;
+    font-weight: bold;
+    text-transform: uppercase;
     margin-block-end: 8px;
-    padding-block-start: 8px;
-    padding-block-end: 8px;
+    padding: 8px;
     width: 95%;
 }
 
 .screen-round-question {
     border-color: #4caf50;
-    font-size: 2em;
-    font-weight: bold;
-    text-transform: uppercase;
 }
 
 .screen-round-answer {
     border-color: darkblue;
+}
+
+.screen-round-answer.hidden {
+    color: transparent;
 }
 
 .screen-round-status-button {
@@ -51,9 +54,9 @@
     border-style: solid;
     display: flex;
     flex-direction: column;
-    padding-left: 8px;
-    padding-right: 8px;
-    width: 90%;
+    padding-left: 0;
+    padding-right: 0;
+    width: 95%;
 }
 
 .screen-round-player {
@@ -61,10 +64,38 @@
     flex-direction: row;
     justify-content: space-between;
     padding-block: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.screen-round-player:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.screen-round-player:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .screen-round-player:not(:last-child) {
+    border-bottom-color: black;
     border-bottom-style: dashed;
+}
+
+.screen-round-player.under {
+    background-color: yellowgreen;
+    color: white;
+}
+
+.screen-round-player.exact {
+    background-color: darkblue;
+    color: white;
+}
+
+.screen-round-player.over {
+    background-color: darkred;
+    color: white;
 }
 
 .screen-round-error {
