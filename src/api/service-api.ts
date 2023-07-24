@@ -9,9 +9,11 @@ export interface ApiResponse {
 
 export enum RoundStatus {
     IDLE = "IDLE",
+    PRESENTED = "PRESENTED",
     STARTED = "STARTED",
     STOPPING = "STOPPING",
-    STOPPED = "STOPPED"
+    STOPPED = "STOPPED",
+    DISPLAYING_ANSWERS = "DISPLAYING_ANSWERS",
 }
 
 export interface RoundResponse extends ApiResponse {
