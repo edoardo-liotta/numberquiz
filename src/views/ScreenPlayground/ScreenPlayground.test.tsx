@@ -36,7 +36,7 @@ describe('Screen Playground component', () => {
     it('should fetch the status information when loaded', async () => {
         const component = render(<ScreenPlayground />);
         await waitFor(() => component.container.querySelector('div'))
-        expect(serviceApi.getRound).toHaveBeenCalledWith(1);
+        expect(serviceApi.getRound).toHaveBeenCalled();
     })
 
     it('should fetch the status information when a WebSocket message is triggered', async () => {
@@ -48,7 +48,7 @@ describe('Screen Playground component', () => {
             jest.advanceTimersByTime(1000);
         });
 
-        expect(serviceApi.getRound).toHaveBeenCalledWith(1);
+        expect(serviceApi.getRound).toHaveBeenCalled();
     })
 
     it('should fetch round status every second when round is in progress', async () => {

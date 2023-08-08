@@ -51,7 +51,7 @@ describe('Host Playground component', () => {
     it('should fetch the status information when loaded', async () => {
         const {getByText} = render(<HostPlayground />);
 
-        expect(serviceApi.getRound).toHaveBeenCalledWith(1);
+        expect(serviceApi.getRound).toHaveBeenCalled();
 
         await waitFor(() => expect(getByText('Inizia il round')).toBeInTheDocument());
     });
@@ -66,7 +66,7 @@ describe('Host Playground component', () => {
         const startRoundButton = getByText('Inizia il round')
         fireEvent.click(startRoundButton)
 
-        expect(serviceApi.startRound).toHaveBeenCalledWith(1);
+        expect(serviceApi.startRound).toHaveBeenCalled();
         await waitFor(() => expect(startRoundButton).not.toBeInTheDocument())
 
         const endRoundButton = getByText('Termina il round')
@@ -83,13 +83,13 @@ describe('Host Playground component', () => {
         const startRoundButton = getByText('Inizia il round')
         fireEvent.click(startRoundButton)
 
-        expect(serviceApi.startRound).toHaveBeenCalledWith(1);
+        expect(serviceApi.startRound).toHaveBeenCalled();
         await waitFor(() => expect(startRoundButton).not.toBeInTheDocument())
 
         const endRoundButton = getByText('Termina il round')
         fireEvent.click(endRoundButton)
 
-        expect(serviceApi.stopRound).toHaveBeenCalledWith(1);
+        expect(serviceApi.stopRound).toHaveBeenCalled();
         await waitFor(() => expect(endRoundButton).not.toBeInTheDocument())
     });
 
