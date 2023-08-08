@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useCallback} from "react";
 import Dial from "../../components/Dial/Dial";
 import {sendAnswer} from "../../api/service-api";
 import WebSocketClient from "../../components/WebSocketClient/WebSocketClient";
 import Idle from "../../components/Idle/Idle";
+import {getDeviceId, getPlayerId} from "../../api/config-api";
 
 interface PlaygroundProps {
     initialQuestion?: string;
@@ -19,7 +20,11 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
     const [latestMessage, setLatestMessage] = React.useState<string>()
     const [currentQuestion, setCurrentQuestion] = React.useState<string | undefined>(props.initialQuestion)
 
-    const handleMessageReceived = (message: string) => {
+    const handleSocketConnected = useCallback((socket: WebSocket) => {
+        socket.send(`register-player|${getDeviceId()}|${getPlayerId()}`)
+    }, [])
+
+    const handleMessageReceived = useCallback((message: string) => {
         console.log("Message received: " + message)
         setLatestMessage(message)
         if (message.startsWith("set-question|")) {
@@ -32,13 +37,13 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
         } else if (message.startsWith("clear-question")) {
             setCurrentQuestion(undefined)
         }
-    }
+    }, [])
 
     const onConfirmAnswer = (props: OnConfirmAnswerProps) => {
         setError(undefined)
         if (!isDialDisabled) {
             setIsDialDisabled(true);
-            sendAnswer(props.value).then(r => {
+            sendAnswer(props.value).then(() => {
                 console.log("Answer sent successfully")
             })
                 .catch(e => {
@@ -63,7 +68,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
                 </>}
             </>}
         </div>
-        <WebSocketClient onMessageReceived={handleMessageReceived} isDebug={props.isDebug}
+        <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} isDebug={props.isDebug}
                          latestMessage={latestMessage} />
     </>
 }

@@ -1,89 +1,88 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {createSocketConnection} from "../../api/service-api";
 import './WebSocketClient.css';
 
 interface WebSocketClientProps {
     isDebug?: boolean;
     latestMessage?: string;
+    onSocketConnected?: (socket: WebSocket) => void;
     onMessageReceived: (message: string) => void;
 }
 
-const WebSocketClient: React.FC<WebSocketClientProps> = ({isDebug, latestMessage, onMessageReceived}) => {
+const WebSocketClient: React.FC<WebSocketClientProps> = ({
+                                                             isDebug,
+                                                             latestMessage,
+                                                             onSocketConnected,
+                                                             onMessageReceived
+                                                         }) => {
     const socketRef = useRef<WebSocket | null>(null);
-    const reconnectIntervalRef = useRef<NodeJS.Timeout | null>(null);
-    const reconnectDelay = 500; // Delay in milliseconds before attempting reconnection
-    const maxFailedReconnectAttempts = 5; // Maximum number of failed reconnection attempts before giving up
-    const [failedReconnectAttempts, setFailedReconnectAttempts] = React.useState<number>(0);
     const [statusMessage, setStatusMessage] = React.useState<string>("Disconnected");
 
-    const connect = (failedAttempts: number) => {
-        socketRef.current = createSocketConnection();
-
-        // Handle connection open event
-        socketRef.current.onopen = () => {
-            console.log('WebSocket client connected');
-            setStatusMessage("Connected");
-            setFailedReconnectAttempts(0);
-            reconnectIntervalRef.current = null
-        };
-
-        // Handle incoming message event
-        socketRef.current.onmessage = (event) => {
-            onMessageReceived(event.data);
-        };
-
-        socketRef.current.onerror = (event) => {
-            console.log("WebSocket error");
-            setFailedReconnectAttempts(failedAttempts + 1);
-        };
-    }
-
-    const disconnect = () => {
+    const disconnect = useCallback(() => {
+        setStatusMessage("Disconnected")
         if (socketRef.current) {
-            socketRef.current.close();
+            try {
+                socketRef.current.close();
+            } catch (e) {
+                console.log("Error closing WebSocket connection");
+                console.log(e);
+            }
             socketRef.current = null;
         }
+    }, [])
 
-        if (reconnectIntervalRef.current) {
-            clearInterval(reconnectIntervalRef.current);
-            reconnectIntervalRef.current = null;
-        }
-    }
+    const connect = useCallback(() => {
+        if (!socketRef.current) {
+            setStatusMessage("Connecting...");
+            const socketConnection = createSocketConnection();
 
-    const reconnect = (failedAttempts: number) => {
-        if (!reconnectIntervalRef.current) {
-            setStatusMessage("Error. Reconnecting...")
-            reconnectIntervalRef.current = setInterval(() => {
-                console.log('Attempting reconnection...');
-                disconnect();
-                connect(failedAttempts);
-            }, reconnectDelay);
+            // Handle connection open event
+            socketConnection.onopen = () => {
+                console.log('WebSocket client connected');
+                socketRef.current = socketConnection;
+                setStatusMessage("Connected");
+                if (onSocketConnected && socketRef.current) {
+                    onSocketConnected(socketRef.current);
+                }
+            };
+
+            // Handle incoming message event
+            socketConnection.onmessage = (event) => {
+                onMessageReceived(event.data);
+            };
+
+            socketConnection.onerror = (event) => {
+                console.log("WebSocket error");
+                console.log(event);
+                disconnect()
+            };
+
+            socketConnection.onerror = () => {
+                console.log("WebSocket error");
+                disconnect()
+            }
+            socketConnection.onclose = () => {
+                disconnect()
+            }
         }
-    }
+    }, [disconnect, onSocketConnected, onMessageReceived])
 
     useEffect(() => {
-        setStatusMessage("Connecting...");
         // Create a new WebSocket connection
-        connect(0);
+        connect();
 
         // Clean up on component unmount
         return () => {
-            setStatusMessage("Disconnected")
             disconnect();
         };
-    }, [onMessageReceived]);
-
-    useEffect(() => {
-        if (failedReconnectAttempts > 0 && failedReconnectAttempts < maxFailedReconnectAttempts) {
-            reconnect(failedReconnectAttempts);
-        } else {
-            setStatusMessage("Error. Disconnected.")
-            console.log('Maximum number of failed reconnection attempts reached');
-        }
-    }, [failedReconnectAttempts]);
+    }, [connect, disconnect, onSocketConnected, onMessageReceived]);
 
     return <>
-        <div id={"websocketclient-status"}>WebSocket Client: {statusMessage}</div>
+        <div id={"websocketclient-status"}>WebSocket Client: {statusMessage}
+        {statusMessage === "Disconnected" && <>
+            &nbsp;<span className={"reconnect"} onClick={connect}>Connect</span>
+            </>}
+        </div>
         {isDebug && latestMessage && <>
           <div>Latest message: {latestMessage}</div>
         </>}

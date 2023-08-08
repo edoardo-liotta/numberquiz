@@ -62,7 +62,7 @@
     margin: 0 8px;
 }
 
-button {
+button.dial {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,12 +79,12 @@ button {
     text-transform: inherit;
 }
 
-button:disabled {
+button.dial:disabled {
     background-color: #9e9e9e;
     cursor: not-allowed;
 }
 
-button.value {
+button.dial.value {
     background-color: white;
     color: black;
 }

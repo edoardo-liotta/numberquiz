@@ -7,8 +7,9 @@ import ScreenRound from "../../components/ScreenRound/ScreenRound";
 interface ScreenPlaygroundProps {
     isDebug?: boolean;
 }
+
 const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygroundProps) => {
-    const [error, setError] = React.useState<string | undefined>();
+    const [error, setError] = React.useState<Error | undefined>();
     const [latestMessage, setLatestMessage] = React.useState<string>()
     const [roundNumber, setRoundNumber] = React.useState<number>(1);
     const [roundStatus, setRoundStatus] = React.useState<RoundStatus | undefined>()
@@ -38,6 +39,10 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
         }
     }
 
+    const handleSocketConnected = (socket: WebSocket) => {
+        socket.send("register-screen")
+    }
+
     const handleMessageReceived = (message: string) => {
         console.log("Message received: " + message)
         setLatestMessage(message)
@@ -50,7 +55,10 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
 
     useEffect(() => {
         setError(undefined)
-        getRound(roundNumber).then(setRoundState).catch(e => {
+        getRound(roundNumber).then((r: RoundResponse) => {
+            console.log(r)
+            setRoundState(r)
+        }).catch(e => {
             setError(e)
         })
     }, [roundNumber])
@@ -61,16 +69,18 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
               <Idle />
             </>}
             {roundStatus && question && <>
-              <ScreenRound roundNumber={roundNumber} roundStatus={roundStatus} question={question} providedAnswers={providedAnswers} />
+              <ScreenRound roundNumber={roundNumber} roundStatus={roundStatus} question={question}
+                           providedAnswers={providedAnswers} />
             </>}
             {error && <>
               <div className={"screen-playground-error"}>
                 Qualcosa è andato storto. Riprova.<br />
-                  {error}
+                  {error.message}
               </div>
             </>}
         </div>
-        <WebSocketClient onMessageReceived={handleMessageReceived} isDebug={props.isDebug}
+        <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived}
+                         isDebug={props.isDebug}
                          latestMessage={latestMessage} />
     </>
 }

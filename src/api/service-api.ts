@@ -53,15 +53,18 @@ export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
 };
 
 export const getRound = async (roundNumber: number): Promise<RoundResponse> => {
-    return Promise.resolve(
-        {
-            status: 200,
-            roundNumber: roundNumber,
-            roundStatus: RoundStatus.IDLE,
-            question: "Domanda",
-            answer: 42,
-            providedAnswers: [{playerName: "Player 1"},{playerName: "Player 2"}]
-        });
+    return fetch(`${(getServiceUrl())}/round/${roundNumber}`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            Promise.reject()
+        }
+        return Promise.resolve<RoundResponse>(r.json())
+    })
 }
 
 export const startRound = async (roundNumber: number): Promise<RoundResponse> => {

@@ -1,6 +1,9 @@
 const defaultConfiguration = () => {
+    const deviceId = `${Math.ceil(Math.random()*10)}`
     return {
-        serviceUrl: "http://localhost:8080"
+        serviceUrl: "http://localhost:8080",
+        deviceId: deviceId,
+        playerId: `Player ${deviceId}`
     }
 }
 
@@ -32,4 +35,12 @@ const getServiceUrl = () => {
     return getConfiguration().serviceUrl
 }
 
-export {getConfiguration, getServiceUrl, resetConfiguration, setConfiguration}
+const getDeviceId = () => {
+    return getConfiguration().deviceId
+}
+
+const getPlayerId = () => {
+    return getConfiguration().playerId
+}
+
+export {getConfiguration, getServiceUrl, getDeviceId, getPlayerId, resetConfiguration, setConfiguration}
