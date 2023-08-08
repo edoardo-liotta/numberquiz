@@ -20,7 +20,7 @@ describe('Round component', () => {
 
     it('should end the round when clicking the button', async () => {
         const onTriggerEndRound = jest.fn();
-        const {getByText} = render(<Round roundStatus={RoundStatus.STARTED} question={"Domanda"} answer={42} providedAnswers={[]} onTriggerEndRound={onTriggerEndRound} />);
+        const {getByText} = render(<Round roundStatus={RoundStatus.STARTED} question={"Domanda"} answer={42} providedAnswers={[]} onTriggerStopRound={onTriggerEndRound} />);
 
         await waitFor(() => {
             getByText('Termina il round')

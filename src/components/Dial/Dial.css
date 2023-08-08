@@ -62,7 +62,7 @@
     margin: 0 8px;
 }
 
-button.dial {
+.dial-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,17 +79,17 @@ button.dial {
     text-transform: inherit;
 }
 
-button.dial:disabled {
+.dial-button:disabled {
     background-color: #9e9e9e;
     cursor: not-allowed;
 }
 
-button.dial.value {
+.dial-button.value {
     background-color: white;
     color: black;
 }
 
-.dial-submit-button {
+.dial-button.dial-submit-button {
     width: 100%;
     height: 48px;
     font-size: 16px;

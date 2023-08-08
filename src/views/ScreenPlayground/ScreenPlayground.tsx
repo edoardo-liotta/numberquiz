@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef} from "react";
 import Idle from "../../components/Idle/Idle";
 import WebSocketClient from "../../components/WebSocketClient/WebSocketClient";
 import {getRound, PlayerAnswer, RoundResponse, RoundStatus} from "../../api/service-api";
@@ -18,6 +18,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
     const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
     const setRoundState = (roundResponse: RoundResponse) => {
+        setRoundNumber(roundResponse.roundNumber)
         setRoundStatus(roundResponse.roundStatus)
         setQuestion(roundResponse.question)
         setProvidedAnswers(roundResponse.providedAnswers)
@@ -26,7 +27,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
             console.log("fetch interval: " + fetchInterval.current)
             if (fetchInterval.current === null) {
                 fetchInterval.current = setInterval(() => {
-                    getRound(roundNumber).then(setRoundState).catch(e => {
+                    getRound().then(setRoundState).catch(e => {
                         setError(e)
                     })
                 }, 1000)
@@ -39,26 +40,24 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
         }
     }
 
-    const handleSocketConnected = (socket: WebSocket) => {
+    const handleSocketConnected = useCallback((socket: WebSocket) => {
+        setError(undefined)
         socket.send("register-screen")
-    }
+    }, [])
 
-    const handleMessageReceived = (message: string) => {
+    const handleMessageReceived = useCallback((message: string) => {
         console.log("Message received: " + message)
         setLatestMessage(message)
         if (message.startsWith("update-round")) {
-            getRound(roundNumber).then(setRoundState).catch(e => {
+            getRound().then(setRoundState).catch(e => {
                 setError(e)
             })
         }
-    }
+    }, [])
 
     useEffect(() => {
         setError(undefined)
-        getRound(roundNumber).then((r: RoundResponse) => {
-            console.log(r)
-            setRoundState(r)
-        }).catch(e => {
+        getRound().then(setRoundState).catch(e => {
             setError(e)
         })
     }, [roundNumber])

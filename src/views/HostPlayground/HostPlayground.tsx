@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {endRound, getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound} from "../../api/service-api";
+import {getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound, stopRound} from "../../api/service-api";
 import Round from "../../components/Round/Round";
 import Idle from "../../components/Idle/Idle";
 
@@ -13,7 +13,7 @@ export interface OnConfirmAnswerProps {
 }
 
 const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProps) => {
-    const [error, setError] = React.useState<string | undefined>();
+    const [error, setError] = React.useState<Error | undefined>();
     const [roundNumber, setRoundNumber] = React.useState<number>(1);
     const [roundStatus, setRoundStatus] = React.useState<RoundStatus | undefined>()
     const [question, setQuestion] = React.useState<string | undefined>(props.initialQuestion)
@@ -29,7 +29,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         if ([RoundStatus.STARTED, RoundStatus.STOPPING].includes(roundResponse.roundStatus)) {
             if (fetchInterval.current === null) {
                 fetchInterval.current = setInterval(() => {
-                    getRound(roundNumber).then(setRoundState).catch(e => {
+                    getRound().then(setRoundState).catch(e => {
                         setError(e)
                     })
                 }, 1000)
@@ -44,21 +44,21 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
 
     const triggerStartRound = () => {
         setError(undefined)
-        startRound(roundNumber).then(setRoundState).catch(e => {
+        startRound().then(setRoundState).catch(e => {
             setError(e)
         })
     }
 
-    const triggerEndRound = () => {
+    const triggerStopRound = () => {
         setError(undefined)
-        endRound(roundNumber).then(setRoundState).catch(e => {
+        stopRound().then(setRoundState).catch(e => {
             setError(e)
         })
     }
 
     useEffect(() => {
         setError(undefined)
-        getRound(roundNumber).then(setRoundState).catch(e => {
+        getRound().then(setRoundState).catch(e => {
             setError(e)
         })
         return () => {
@@ -75,10 +75,10 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         }
         {roundStatus && question && answer &&
             <Round roundStatus={roundStatus} question={question} answer={answer} providedAnswers={providedAnswers}
-                   onTriggerStartRound={triggerStartRound} onTriggerEndRound={triggerEndRound} />
+                   onTriggerStartRound={triggerStartRound} onTriggerStopRound={triggerStopRound} />
         }
         {error &&
-            <div className="error">Error: {error}</div>
+            <div className="error">Error: {error.message}</div>
         }
     </>
 }

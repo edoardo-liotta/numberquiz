@@ -24,7 +24,7 @@ describe('Host Playground component', () => {
             providedAnswers: []
         });
 
-        jest.spyOn(serviceApi, 'endRound').mockResolvedValue({
+        jest.spyOn(serviceApi, 'stopRound').mockResolvedValue({
             status: 200,
             roundNumber: 1,
             roundStatus: RoundStatus.STOPPED,
@@ -89,7 +89,7 @@ describe('Host Playground component', () => {
         const endRoundButton = getByText('Termina il round')
         fireEvent.click(endRoundButton)
 
-        expect(serviceApi.endRound).toHaveBeenCalledWith(1);
+        expect(serviceApi.stopRound).toHaveBeenCalledWith(1);
         await waitFor(() => expect(endRoundButton).not.toBeInTheDocument())
     });
 

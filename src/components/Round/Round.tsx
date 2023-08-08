@@ -9,7 +9,7 @@ interface RoundProps {
     answer: number;
     providedAnswers: PlayerAnswer[];
     onTriggerStartRound?: () => void;
-    onTriggerEndRound?: () => void;
+    onTriggerStopRound?: () => void;
 }
 
 const Round: React.FC<RoundProps> = ({
@@ -18,7 +18,7 @@ const Round: React.FC<RoundProps> = ({
                                          answer,
                                          providedAnswers,
                                          onTriggerStartRound,
-                                         onTriggerEndRound
+                                         onTriggerStopRound
                                      }: RoundProps) => {
     const [answerVisible, setAnswerVisible] = React.useState<boolean>(false)
 
@@ -43,7 +43,7 @@ const Round: React.FC<RoundProps> = ({
             {roundStatus === RoundStatus.STARTED &&
                 <div>
                   <button id={"host-round-end-button"} className={"host-round-status-button"}
-                          onClick={onTriggerEndRound}>Termina il round
+                          onClick={onTriggerStopRound}>Termina il round
                   </button>
                 </div>
             }

@@ -52,8 +52,8 @@ export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
     // })
 };
 
-export const getRound = async (roundNumber: number): Promise<RoundResponse> => {
-    return fetch(`${(getServiceUrl())}/round/${roundNumber}`, {
+export const getRound = async (): Promise<RoundResponse> => {
+    return fetch(`${(getServiceUrl())}/round`, {
         method: "GET",
         headers: {
             "Accept": "application/json",
@@ -67,26 +67,32 @@ export const getRound = async (roundNumber: number): Promise<RoundResponse> => {
     })
 }
 
-export const startRound = async (roundNumber: number): Promise<RoundResponse> => {
-    return Promise.resolve(
-        {
-            status: 200,
-            roundNumber: roundNumber,
-            roundStatus: RoundStatus.STARTED,
-            question: "Domanda",
-            answer: 42,
-            providedAnswers: [{playerName: "Player 1", providedAnswer: 42},{playerName: "Player 2"}]
-        });
+export const startRound = async (): Promise<RoundResponse> => {
+    return fetch(`${(getServiceUrl())}/round/start`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            Promise.reject()
+        }
+        return Promise.resolve<RoundResponse>(r.json())
+    })
 }
 
-export const endRound = async (roundNumber: number): Promise<RoundResponse> => {
-    return Promise.resolve(
-        {
-            status: 200,
-            roundNumber: roundNumber,
-            roundStatus: RoundStatus.STOPPED,
-            question: "Domanda",
-            answer: 42,
-            providedAnswers: [{playerName: "Player 1", providedAnswer: 42},{playerName: "Player 2", providedAnswer: 10}]
-        });
+export const stopRound = async (): Promise<RoundResponse> => {
+    return fetch(`${(getServiceUrl())}/round/stop`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            Promise.reject()
+        }
+        return Promise.resolve<RoundResponse>(r.json())
+    })
 }

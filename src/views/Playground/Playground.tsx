@@ -16,7 +16,7 @@ export interface OnConfirmAnswerProps {
 
 const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
     const [isDialDisabled, setIsDialDisabled] = React.useState<boolean>(false);
-    const [error, setError] = React.useState<string>()
+    const [error, setError] = React.useState<Error | undefined>()
     const [latestMessage, setLatestMessage] = React.useState<string>()
     const [currentQuestion, setCurrentQuestion] = React.useState<string | undefined>(props.initialQuestion)
 
@@ -63,7 +63,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
                 {error && <>
                   <div className={"playground-error"}>
                     Qualcosa è andato storto. Riprova.<br />
-                      {error}
+                      {error.message}
                   </div>
                 </>}
             </>}
