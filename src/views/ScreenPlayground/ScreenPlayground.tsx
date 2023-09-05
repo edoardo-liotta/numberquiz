@@ -17,7 +17,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
     const [providedAnswers, setProvidedAnswers] = React.useState<PlayerAnswer[]>([])
     const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
-    const setRoundState = (roundResponse: RoundResponse) => {
+    const setRoundState = useCallback((roundResponse: RoundResponse) => {
         setRoundNumber(roundResponse.roundNumber)
         setRoundStatus(roundResponse.roundStatus)
         setQuestion(roundResponse.question)
@@ -38,7 +38,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
                 fetchInterval.current = null
             }
         }
-    }
+    }, [fetchInterval])
 
     const handleSocketConnected = useCallback((socket: WebSocket) => {
         setError(undefined)
@@ -53,14 +53,14 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
                 setError(e)
             })
         }
-    }, [])
+    }, [setRoundState])
 
     useEffect(() => {
         setError(undefined)
         getRound().then(setRoundState).catch(e => {
             setError(e)
         })
-    }, [roundNumber])
+    }, [roundNumber, setRoundState])
 
     return <>
         <div className={"screen-playground-container"}>

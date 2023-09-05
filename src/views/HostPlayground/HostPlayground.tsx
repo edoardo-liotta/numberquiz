@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef} from "react";
 import {getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound, stopRound} from "../../api/service-api";
 import Round from "../../components/Round/Round";
 import Idle from "../../components/Idle/Idle";
@@ -21,7 +21,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
     const [providedAnswers, setProvidedAnswers] = React.useState<PlayerAnswer[]>([])
     const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
-    const setRoundState = (roundResponse: RoundResponse) => {
+    const setRoundState = useCallback((roundResponse: RoundResponse) => {
         setRoundStatus(roundResponse.roundStatus)
         setQuestion(roundResponse.question)
         setAnswer(roundResponse.answer)
@@ -40,7 +40,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
                 fetchInterval.current = null
             }
         }
-    }
+    }, [fetchInterval])
 
     const triggerStartRound = () => {
         setError(undefined)
@@ -67,7 +67,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
                 fetchInterval.current = null;
             }
         }
-    }, [roundNumber])
+    }, [roundNumber, setRoundState])
 
     return <>
         {!roundStatus &&
