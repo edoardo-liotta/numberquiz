@@ -14,6 +14,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
     const [roundNumber, setRoundNumber] = React.useState<number>(1);
     const [roundStatus, setRoundStatus] = React.useState<RoundStatus | undefined>()
     const [question, setQuestion] = React.useState<string | undefined>()
+    const [answer, setAnswer] = React.useState<number | undefined>()
     const [providedAnswers, setProvidedAnswers] = React.useState<PlayerAnswer[]>([])
     const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
@@ -21,6 +22,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
         setRoundNumber(roundResponse.roundNumber)
         setRoundStatus(roundResponse.roundStatus)
         setQuestion(roundResponse.question)
+        setAnswer(roundResponse.answer)
         setProvidedAnswers(roundResponse.providedAnswers)
         console.log("Round status: " + roundResponse.roundStatus)
         if ([RoundStatus.STARTED, RoundStatus.STOPPING].includes(roundResponse.roundStatus)) {
@@ -68,7 +70,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
               <Idle />
             </>}
             {roundStatus && question && <>
-              <ScreenRound roundNumber={roundNumber} roundStatus={roundStatus} question={question}
+              <ScreenRound roundNumber={roundNumber} roundStatus={roundStatus} question={question} answer={answer}
                            providedAnswers={providedAnswers} />
             </>}
             {error && <>

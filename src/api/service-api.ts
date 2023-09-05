@@ -47,7 +47,7 @@ export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
         }
     }).then(r => {
         if (r.status >= 300) {
-            Promise.reject(r)
+            return Promise.reject(r)
         }
         return Promise.resolve<ApiResponse>(r.json())
     }).catch(e => {
@@ -65,7 +65,7 @@ export const getRound = async (): Promise<RoundResponse> => {
         }
     }).then(r => {
         if (r.status >= 300) {
-            Promise.reject()
+            return Promise.reject()
         }
         return Promise.resolve<RoundResponse>(r.json())
     })
@@ -80,7 +80,7 @@ export const startRound = async (): Promise<RoundResponse> => {
         }
     }).then(r => {
         if (r.status >= 300) {
-            Promise.reject()
+            return Promise.reject()
         }
         return Promise.resolve<RoundResponse>(r.json())
     })
@@ -95,7 +95,22 @@ export const stopRound = async (): Promise<RoundResponse> => {
         }
     }).then(r => {
         if (r.status >= 300) {
-            Promise.reject()
+            return Promise.reject()
+        }
+        return Promise.resolve<RoundResponse>(r.json())
+    })
+}
+
+export const showRoundResults = async (): Promise<RoundResponse> => {
+    return fetch(`${(getServiceUrl())}/round/display-answers`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            return Promise.reject()
         }
         return Promise.resolve<RoundResponse>(r.json())
     })

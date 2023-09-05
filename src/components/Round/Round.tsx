@@ -10,6 +10,7 @@ interface RoundProps {
     providedAnswers: PlayerAnswer[];
     onTriggerStartRound?: () => void;
     onTriggerStopRound?: () => void;
+    onTriggerDisplayAnswers?: () => void;
 }
 
 const Round: React.FC<RoundProps> = ({
@@ -18,7 +19,8 @@ const Round: React.FC<RoundProps> = ({
                                          answer,
                                          providedAnswers,
                                          onTriggerStartRound,
-                                         onTriggerStopRound
+                                         onTriggerStopRound,
+                                         onTriggerDisplayAnswers
                                      }: RoundProps) => {
     const [answerVisible, setAnswerVisible] = React.useState<boolean>(false)
 
@@ -50,7 +52,7 @@ const Round: React.FC<RoundProps> = ({
             {roundStatus === RoundStatus.STOPPED &&
                 <div>
                   <button id={"host-round-show-results-button"} className={"host-round-status-button"}
-                  >Mostra i risultati
+                          onClick={onTriggerDisplayAnswers}>Mostra i risultati
                   </button>
                 </div>
             }

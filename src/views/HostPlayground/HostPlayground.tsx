@@ -1,5 +1,13 @@
 import React, {useCallback, useEffect, useRef} from "react";
-import {getRound, PlayerAnswer, RoundResponse, RoundStatus, startRound, stopRound} from "../../api/service-api";
+import {
+    getRound,
+    PlayerAnswer,
+    RoundResponse,
+    RoundStatus,
+    showRoundResults,
+    startRound,
+    stopRound
+} from "../../api/service-api";
 import Round from "../../components/Round/Round";
 import Idle from "../../components/Idle/Idle";
 
@@ -56,6 +64,13 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         })
     }
 
+    const triggerDisplayAnswers = () => {
+        setError(undefined)
+        showRoundResults().then(setRoundState).catch(e => {
+            setError(e)
+        })
+    }
+
     useEffect(() => {
         setError(undefined)
         getRound().then(setRoundState).catch(e => {
@@ -75,7 +90,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         }
         {roundStatus && question && answer &&
             <Round roundStatus={roundStatus} question={question} answer={answer} providedAnswers={providedAnswers}
-                   onTriggerStartRound={triggerStartRound} onTriggerStopRound={triggerStopRound} />
+                   onTriggerStartRound={triggerStartRound} onTriggerStopRound={triggerStopRound} onTriggerDisplayAnswers={triggerDisplayAnswers} />
         }
         {error &&
             <div className="error">Error: {error.message}</div>

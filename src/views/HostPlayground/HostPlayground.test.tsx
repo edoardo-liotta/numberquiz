@@ -74,17 +74,20 @@ describe('Host Playground component', () => {
     });
 
     it('should end the round when clicking the button', async () => {
+        jest.spyOn(serviceApi, 'getRound').mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.STARTED,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: []
+        });
+
         const {getByText} = render(<HostPlayground />);
 
         await waitFor(() => {
-            getByText('Inizia il round')
+            getByText('Termina il round')
         })
-
-        const startRoundButton = getByText('Inizia il round')
-        fireEvent.click(startRoundButton)
-
-        expect(serviceApi.startRound).toHaveBeenCalled();
-        await waitFor(() => expect(startRoundButton).not.toBeInTheDocument())
 
         const endRoundButton = getByText('Termina il round')
         fireEvent.click(endRoundButton)
@@ -92,6 +95,38 @@ describe('Host Playground component', () => {
         expect(serviceApi.stopRound).toHaveBeenCalled();
         await waitFor(() => expect(endRoundButton).not.toBeInTheDocument())
     });
+
+    it('should display the correct answers and the user answers', async () => {
+        jest.spyOn(serviceApi, 'getRound').mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.STOPPED,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: []
+        });
+
+        jest.spyOn(serviceApi, 'showRoundResults').mockResolvedValue({
+            status: 200,
+            roundNumber: 1,
+            roundStatus: RoundStatus.DISPLAYING_ANSWERS,
+            question: "Domanda",
+            answer: 42,
+            providedAnswers: []
+        })
+
+        const {getByText} = render(<HostPlayground />);
+
+        await waitFor(() => {
+            getByText('Mostra i risultati')
+        })
+
+        const showResultsButton = getByText('Mostra i risultati')
+        fireEvent.click(showResultsButton)
+
+        expect(serviceApi.showRoundResults).toHaveBeenCalled();
+        await waitFor(() => expect(showResultsButton).not.toBeInTheDocument())
+    })
 
     it('should fetch round status every second and print any provided answer when round is in progress', async () => {
         jest.useFakeTimers()

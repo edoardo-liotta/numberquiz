@@ -32,6 +32,20 @@ describe('Round component', () => {
         expect(onTriggerEndRound).toHaveBeenCalled();
     });
 
+    it('should trigger results display when clicking the button', async () => {
+        const onTriggerDisplayAnswers = jest.fn();
+        const {getByText} = render(<Round roundStatus={RoundStatus.STOPPED} question={"Domanda"} answer={42} providedAnswers={[]} onTriggerDisplayAnswers={onTriggerDisplayAnswers} />);
+
+        await waitFor(() => {
+            getByText('Mostra i risultati')
+        })
+
+        const displayAnswersButton = getByText('Mostra i risultati')
+        fireEvent.click(displayAnswersButton)
+
+        expect(onTriggerDisplayAnswers).toHaveBeenCalled();
+    });
+
     it('should render the provided answers', async () => {
         const {getByText} = render(<Round roundStatus={RoundStatus.IDLE} question={"Domanda"} answer={42} providedAnswers={[{playerName: "Edoardo"},{playerName:"Antonietta", providedAnswer: 10}]} />);
 
