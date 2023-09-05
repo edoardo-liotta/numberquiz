@@ -1,4 +1,4 @@
-import {getServiceUrl} from './config-api';
+import {getDeviceId, getPlayerId, getServiceUrl} from './config-api';
 
 export interface ApiResponse {
     // Define the structure of your API response here
@@ -35,21 +35,25 @@ export const createSocketConnection = () => {
 }
 
 export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
-    return new Promise<ApiResponse>(() => {
-    });
-    // return fetch(`${(getServiceUrl())}/answer`, {
-    //     method: "POST",
-    //     body: JSON.stringify({answer}),
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         "ngrok-skip-browser-warning": "any"
-    //     }
-    // }).then(r => {
-    //     if (r.status >= 300) {
-    //         Promise.reject()
-    //     }
-    //     return new Promise<ApiResponse>(() => r.json())
-    // })
+    return fetch(`${(getServiceUrl())}/answer`, {
+        method: "POST",
+        body: JSON.stringify({
+            playerId: getDeviceId(),
+            playerName: getPlayerId(),
+            providedAnswer: answer}),
+        headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            Promise.reject(r)
+        }
+        return Promise.resolve<ApiResponse>(r.json())
+    }).catch(e => {
+        console.log(e)
+        return Promise.reject(e)
+    })
 };
 
 export const getRound = async (): Promise<RoundResponse> => {
