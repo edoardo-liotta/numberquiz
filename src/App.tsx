@@ -4,6 +4,7 @@ import {HashRouter, Link, Route, Routes} from "react-router-dom";
 import PlayerApp from "./PlayerApp";
 import HostApp from "./HostApp";
 import ScreenApp from "./ScreenApp";
+import Configuration from "./components/Configuration/Configuration";
 
 function App() {
 
@@ -36,6 +37,7 @@ const Home: React.FC = () => {
                 </li>
             </ul>
         </nav>
+        <Configuration />
     </>
 }
 

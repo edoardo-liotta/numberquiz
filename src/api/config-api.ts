@@ -1,5 +1,5 @@
 const defaultConfiguration = () => {
-    const deviceId = `${Math.ceil(Math.random()*10)}`
+    const deviceId = `${Math.ceil(Math.random()*1000)}`
     return {
         serviceUrl: "http://localhost:8080",
         deviceId: deviceId,
