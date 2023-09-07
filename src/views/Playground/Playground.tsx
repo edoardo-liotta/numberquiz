@@ -4,6 +4,7 @@ import {sendAnswer} from "../../api/service-api";
 import WebSocketClient from "../../components/WebSocketClient/WebSocketClient";
 import Idle from "../../components/Idle/Idle";
 import {getDeviceId, getPlayerId} from "../../api/config-api";
+import './Playground.css'
 
 interface PlaygroundProps {
     initialQuestion?: string;
@@ -70,6 +71,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
         </div>
         <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} isDebug={props.isDebug}
                          latestMessage={latestMessage} />
+        <div className={"playground-vertical"}>Ruota lo schermo in orizzontale</div>
     </>
 }
 

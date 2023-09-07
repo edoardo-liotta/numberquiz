@@ -7,7 +7,6 @@ import {Server, WebSocket} from "mock-socket";
 
 describe('Playground view', () => {
     let mockServer: Server;
-    let createSocketConnectionMock: jest.SpyInstance;
 
     beforeEach(() => {
         jest.spyOn(serviceApi, 'sendAnswer').mockImplementation(() => {
@@ -17,7 +16,7 @@ describe('Playground view', () => {
             });
         });
 
-        createSocketConnectionMock = jest.spyOn(serviceApi, 'createSocketConnection').mockImplementation(() => {
+        jest.spyOn(serviceApi, 'createSocketConnection').mockImplementation(() => {
             return new WebSocket('ws://Playground:8080/')
         });
 

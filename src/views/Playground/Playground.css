@@ -1,8 +1,25 @@
-.playground-container {
-    height: 100vh;
-    width: 100vw;
+@media screen and (orientation: landscape) {
+    .playground-container {
+        height: 100vh;
+        width: 100vw;
+    }
+
+    .playground-error {
+        color: darkred;
+    }
+
+    .playground-vertical {
+        display: none;
+    }
 }
 
-.playground-error {
-    color: darkred;
+@media screen and (orientation: portrait) {
+    .playground-container {
+        display: none;
+    }
+
+    .playground-vertical {
+        height: 100vh;
+        width: 100vw;
+    }
 }
