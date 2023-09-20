@@ -35,7 +35,7 @@ const ScreenRound: React.FC<CounterProps> = ({
     )) || [], [answer, answersPlusActualAnswer]);
 
     const isDisplayingQuestion = roundStatus !== RoundStatus.IDLE;
-    const isDisplayingAnswers = answer !== undefined && [RoundStatus.DISPLAYING_ANSWERS].includes(roundStatus);
+    const isDisplayingAnswers = answer !== undefined && [RoundStatus.STOPPED, RoundStatus.DISPLAYING_ANSWERS].includes(roundStatus);
 
     const calculateDynamicInterval = useCallback((currentCount: number, targetNumber: number) => {
         // Adjust the interval duration based on the distance to the targetNumber
@@ -121,7 +121,7 @@ const ScreenRound: React.FC<CounterProps> = ({
                 <div className={"screen-round-question"}>{roundStatus === RoundStatus.IDLE && <>Round {roundNumber}</>}
                     {isDisplayingQuestion && question}</div>
                 {isDisplayingQuestion && <div
-                    className={`screen-round-answer ${!isDisplayingAnswers ? "hidden" : ""} ${doneTicking ? "done-ticking" : ""} ${!doneTicking ? "ticking" : ""}`}>
+                    className={`screen-round-answer ${(!isDisplayingAnswers || currentCount === 0) ? "hidden" : ""} ${doneTicking ? "done-ticking" : ""} ${!doneTicking ? "ticking" : ""}`}>
                   <div style={{
                       width: `${currentCount}vw`,
                       backgroundColor: doneTicking ? 'darkblue' : 'blue',
@@ -145,12 +145,12 @@ const ScreenRound: React.FC<CounterProps> = ({
                     return <li
                         key={item.playerName}
                         style={{position: 'relative'}}
-                        className={`screen-round-player ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer < currentCount && "under") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer > answer && doneTicking && "over") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && "exact") || ""}`}>
+                        className={`screen-round-player ${(isDisplayingAnswers && (!item.providedAnswer || (item.providedAnswer === 0 || item.providedAnswer < currentCount)) && "under") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer > answer && doneTicking && "over") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && "exact") || ""}`}>
                         <div style={overlayStyle}></div>
                         <div
-                            className={"screen-round-player-name"}>{item.playerName}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && " ⭐"}</div>
+                            className={"screen-round-player-name"}>{item.playerName}{(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && " ⭐") || ""}</div>
                         <div
-                            className={"screen-round-player-answer"}>{!isDisplayingAnswers && item.providedAnswer && "✅"}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer}</div>
+                            className={"screen-round-player-answer"}>{!isDisplayingAnswers && item.providedAnswer && "✅"}{(isDisplayingAnswers && (item.providedAnswer && (item.providedAnswer > 0) ? item.providedAnswer : "-"))}</div>
                     </li>
                 })}
             </ul>

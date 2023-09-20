@@ -19,9 +19,10 @@ function App() {
                     <Route path="/host" element={<HostApp />}>Host</Route>
                     <Route path="/screen" element={<ScreenApp />}>Host</Route>
                     <Route path="/countertest"
-                           element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.DISPLAYING_ANSWERS}
+                           element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.STOPPED}
                                                  question={"Question"} answer={42}
                                                  providedAnswers={[
+                                                     {playerName: "No answer", providedAnswer: 0},
                                                      {playerName: "Under", providedAnswer: 10},
                                                      {playerName: "Exact", providedAnswer: 42},
                                                      {playerName: "Over", providedAnswer: 50}
