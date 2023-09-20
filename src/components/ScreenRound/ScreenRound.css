@@ -34,6 +34,8 @@
 
 .screen-round-answer {
     border-color: darkblue;
+    display: flex;
+    flex-direction: row;
 }
 
 .screen-round-answer.hidden {
@@ -53,7 +55,9 @@
     border-radius: 10px;
     border-style: solid;
     display: flex;
+    font-weight: bold;
     flex-direction: column;
+    max-width: 640px;
     padding-left: 0;
     padding-right: 0;
     width: 95%;
@@ -84,11 +88,11 @@
 }
 
 .screen-round-player.under {
-    background-color: yellowgreen;
+    background-color: dimgray;
     color: white;
 }
 
-.screen-round-player.exact, .done-ticking {
+.screen-round-player.exact {
     background-color: darkblue;
     color: white;
 }

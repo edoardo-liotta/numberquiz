@@ -36,7 +36,7 @@ describe('ScreenRound component', () => {
             providedAnswer: 10
         }, {playerName: "Exact", providedAnswer: 42}, {playerName: "Over", providedAnswer: 43}]} />);
 
-        for (let i = 0; i < 44; i++) {
+        for (let i = 0; i < 50; i++) {
             await act(() => jest.advanceTimersByTime(3000))
         }
 

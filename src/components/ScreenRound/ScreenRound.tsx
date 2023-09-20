@@ -25,7 +25,7 @@ const ScreenRound: React.FC<CounterProps> = ({
     const [currentPairIndex, setCurrentPairIndex] = useState(0);
     const [doneTicking, setDoneTicking] = useState(false);
 
-    const answersPlusActualAnswer = useMemo (() => [...providedAnswers], [providedAnswers]);
+    const answersPlusActualAnswer = useMemo(() => [...providedAnswers], [providedAnswers]);
     answersPlusActualAnswer.push({playerName: "actualAnswer", providedAnswer: answer});
     const sortedValidAnswers = useMemo(() => (answer && (answersPlusActualAnswer
             .filter((pair) => pair.providedAnswer && pair.providedAnswer <= answer)
@@ -121,15 +121,32 @@ const ScreenRound: React.FC<CounterProps> = ({
                 <div className={"screen-round-question"}>{roundStatus === RoundStatus.IDLE && <>Round {roundNumber}</>}
                     {isDisplayingQuestion && question}</div>
                 {isDisplayingQuestion && <div
-                    className={`screen-round-answer ${!isDisplayingAnswers ? "hidden" : ""} ${doneTicking ? "done-ticking" : ""}`}>{currentCount}</div>
+                    className={`screen-round-answer ${!isDisplayingAnswers ? "hidden" : ""} ${doneTicking ? "done-ticking" : ""} ${!doneTicking ? "ticking" : ""}`}>
+                  <div style={{
+                      width: `${currentCount}vw`,
+                      backgroundColor: doneTicking ? 'darkblue' : 'blue',
+                  }}></div>
+                  &nbsp;{currentCount}
+                </div>
                 }
             </div>
 
             <ul className={"screen-round-players-container"}>
                 {providedAnswers && providedAnswers.map(function (item) {
+                    const overlayStyle: React.CSSProperties = {
+                        position: 'absolute',
+                        width: `calc(${Math.min(((item.providedAnswer && (item.providedAnswer > 0 && currentCount * 100 / item.providedAnswer)) || 0), 100)}% - 16px)`,
+                        height: 'calc(100% - 16px)',
+                        backgroundColor: 'blue',
+                        opacity: 0.3, // Adjust the opacity as needed
+                        display: (item.providedAnswer && (item.providedAnswer >= currentCount) && !doneTicking) || false ? 'block' : 'none',
+                    };
+
                     return <li
                         key={item.playerName}
+                        style={{position: 'relative'}}
                         className={`screen-round-player ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer < currentCount && "under") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer > answer && doneTicking && "over") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && "exact") || ""}`}>
+                        <div style={overlayStyle}></div>
                         <div
                             className={"screen-round-player-name"}>{item.playerName}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && " ⭐"}</div>
                         <div
