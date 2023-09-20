@@ -1,9 +1,8 @@
-import React from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {PlayerAnswer, RoundStatus} from "../../api/service-api";
 import './ScreenRound.css'
 
-
-interface ScreenRoundProps {
+interface CounterProps {
     roundNumber: number;
     roundStatus: RoundStatus;
     question: string;
@@ -11,24 +10,118 @@ interface ScreenRoundProps {
     providedAnswers: PlayerAnswer[];
 }
 
-const ScreenRound: React.FC<ScreenRoundProps> = ({
-                                                     roundNumber,
-                                                     roundStatus,
-                                                     question,
-                                                     answer,
-                                                     providedAnswers,
-                                                 }: ScreenRoundProps) => {
+const maxIntervalDuration = 2000;
+const minIntervalDuration = maxIntervalDuration / 10;
+const maxIntervalDurationFraction = maxIntervalDuration / 20;
+const ScreenRound: React.FC<CounterProps> = ({
+                                                 roundNumber,
+                                                 roundStatus,
+                                                 question,
+                                                 answer,
+                                                 providedAnswers,
+                                             }) => {
+    const [currentCount, setCurrentCount] = useState(0);
+    const [targetNumber, setTargetNumber] = useState(0);
+    const [currentPairIndex, setCurrentPairIndex] = useState(0);
+    const [doneTicking, setDoneTicking] = useState(false);
 
+    const answersPlusActualAnswer = useMemo (() => [...providedAnswers], [providedAnswers]);
+    answersPlusActualAnswer.push({playerName: "actualAnswer", providedAnswer: answer});
+    const sortedValidAnswers = useMemo(() => (answer && (answersPlusActualAnswer
+            .filter((pair) => pair.providedAnswer && pair.providedAnswer <= answer)
+            .map((pair) => pair.providedAnswer!)
+            .filter((value, index, array) => array.indexOf(value) === index) // -> toSet
+            .sort()
+    )) || [], [answer, answersPlusActualAnswer]);
 
     const isDisplayingQuestion = roundStatus !== RoundStatus.IDLE;
     const isDisplayingAnswers = answer !== undefined && [RoundStatus.DISPLAYING_ANSWERS].includes(roundStatus);
+
+    const calculateDynamicInterval = useCallback((currentCount: number, targetNumber: number) => {
+        // Adjust the interval duration based on the distance to the targetNumber
+        const distanceToTarget = targetNumber - currentCount;
+        const distanceToTargetFactor = maxIntervalDurationFraction * (distanceToTarget ** 2);
+        //console.log("\ninterval duration: " + maxIntervalDuration + "\ndistance to target: " + distanceToTarget + "\ndistance factor: " + distanceToTargetFactor + "\ndynamic interval: " + dynamicInterval)
+        return Math.max(maxIntervalDuration - distanceToTargetFactor, minIntervalDuration); // Adjust the factor (2) as needed
+    }, []);
+
+    const updateCounter = useCallback(() => {
+        return () => {
+            if (currentCount < targetNumber) {
+                setCurrentCount((prevCount) => Math.min(prevCount + 1, targetNumber));
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                }
+            } else {
+                // Stop the animation when the count reaches or exceeds the targetNumber
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+
+                    // Check if there's a next pair to target, and if so, update the target
+                    if (currentPairIndex < sortedValidAnswers.length - 1) {
+                        setCurrentPairIndex(currentPairIndex + 1);
+                        setTargetNumber(sortedValidAnswers[currentPairIndex + 1]);
+                    } else {
+                        // If it's the last tick, set the extra tick in progress and stop the animation
+                        setDoneTicking(true);
+                    }
+                }
+            }
+        };
+    }, [currentCount, targetNumber, sortedValidAnswers, currentPairIndex]);
+
+    // Create a memoized setTarget function
+    const setTarget = useCallback(
+        (newTarget: number) => {
+            setTargetNumber(newTarget);
+        },
+        [setTargetNumber]
+    );
+
+    // Use a custom useInterval hook (not part of React) to handle intervals
+    const useInterval = (callback: () => void, delay: number) => {
+        const savedCallback = useCallback(callback, [callback]);
+
+        useEffect(() => {
+            if (roundStatus === RoundStatus.DISPLAYING_ANSWERS) {
+                intervalRef.current = setInterval(() => {
+                    savedCallback();
+                }, calculateDynamicInterval(currentCount, targetNumber));
+                return () => {
+                    if (intervalRef.current) {
+                        clearInterval(intervalRef.current);
+                    }
+                };
+            }
+        }, [delay, savedCallback]);
+    };
+
+    // Use useRef to store the intervalId
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Set up the interval using the custom useInterval hook
+    useInterval(updateCounter(), maxIntervalDuration);
+
+    useEffect(() => {
+        if (roundStatus === RoundStatus.DISPLAYING_ANSWERS) {
+            setTarget(Math.min(...sortedValidAnswers));
+        }
+    }, [sortedValidAnswers, setTarget, roundStatus]);
+
+    useEffect(() => {
+        // Check if the extra tick is in progress and stop the animation
+        if (doneTicking && intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+    }, [doneTicking]);
+
     return <>
         <div className={"screen-round-container"}>
             <div className={"screen-round-question-container"}>
                 <div className={"screen-round-question"}>{roundStatus === RoundStatus.IDLE && <>Round {roundNumber}</>}
                     {isDisplayingQuestion && question}</div>
                 {isDisplayingQuestion && <div
-                    className={`screen-round-answer ${!isDisplayingAnswers && "hidden"}`}>{answer}</div>
+                    className={`screen-round-answer ${!isDisplayingAnswers ? "hidden" : ""} ${doneTicking ? "done-ticking" : ""}`}>{currentCount}</div>
                 }
             </div>
 
@@ -36,9 +129,9 @@ const ScreenRound: React.FC<ScreenRoundProps> = ({
                 {providedAnswers && providedAnswers.map(function (item) {
                     return <li
                         key={item.playerName}
-                        className={`screen-round-player ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer < answer && "under") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer > answer && "over") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && "exact") || ""}`}>
+                        className={`screen-round-player ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer < currentCount && "under") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer > answer && doneTicking && "over") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && "exact") || ""}`}>
                         <div
-                            className={"screen-round-player-name"}>{item.playerName}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && " ⭐"}</div>
+                            className={"screen-round-player-name"}>{item.playerName}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && " ⭐"}</div>
                         <div
                             className={"screen-round-player-answer"}>{!isDisplayingAnswers && item.providedAnswer && "✅"}{isDisplayingAnswers && item.providedAnswer && item.providedAnswer}</div>
                     </li>
@@ -46,6 +139,6 @@ const ScreenRound: React.FC<ScreenRoundProps> = ({
             </ul>
         </div>
     </>
-}
+};
 
 export default ScreenRound;

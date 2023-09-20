@@ -88,7 +88,7 @@
     color: white;
 }
 
-.screen-round-player.exact {
+.screen-round-player.exact, .done-ticking {
     background-color: darkblue;
     color: white;
 }
