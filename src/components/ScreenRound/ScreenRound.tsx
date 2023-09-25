@@ -25,14 +25,11 @@ const ScreenRound: React.FC<CounterProps> = ({
     const [currentPairIndex, setCurrentPairIndex] = useState(0);
     const [doneTicking, setDoneTicking] = useState(false);
 
-    const answersPlusActualAnswer = useMemo(() => [...providedAnswers], [providedAnswers]);
-    answersPlusActualAnswer.push({playerName: "actualAnswer", providedAnswer: answer});
-    const sortedValidAnswers = useMemo(() => (answer && (answersPlusActualAnswer
-            .filter((pair) => pair.providedAnswer && pair.providedAnswer <= answer)
+    const sortedValidAnswers = useMemo(() => ([...providedAnswers]
             .map((pair) => pair.providedAnswer!)
             .filter((value, index, array) => array.indexOf(value) === index) // -> toSet
             .sort()
-    )) || [], [answer, answersPlusActualAnswer]);
+    ) || [], [providedAnswers]);
 
     const isDisplayingQuestion = roundStatus !== RoundStatus.IDLE;
     const isDisplayingAnswers = answer !== undefined && [RoundStatus.STOPPED, RoundStatus.DISPLAYING_ANSWERS].includes(roundStatus);
@@ -47,7 +44,7 @@ const ScreenRound: React.FC<CounterProps> = ({
 
     const updateCounter = useCallback(() => {
         return () => {
-            if (currentCount < targetNumber) {
+            if (currentCount < Math.min(targetNumber, answer || 0)) {
                 setCurrentCount((prevCount) => Math.min(prevCount + 1, targetNumber));
                 if (intervalRef.current) {
                     clearInterval(intervalRef.current);
@@ -58,7 +55,7 @@ const ScreenRound: React.FC<CounterProps> = ({
                     clearInterval(intervalRef.current);
 
                     // Check if there's a next pair to target, and if so, update the target
-                    if (currentPairIndex < sortedValidAnswers.length - 1) {
+                    if (currentCount < (answer || 0) && currentPairIndex < sortedValidAnswers.length - 1) {
                         setCurrentPairIndex(currentPairIndex + 1);
                         setTargetNumber(sortedValidAnswers[currentPairIndex + 1]);
                     } else {
@@ -68,7 +65,7 @@ const ScreenRound: React.FC<CounterProps> = ({
                 }
             }
         };
-    }, [currentCount, targetNumber, sortedValidAnswers, currentPairIndex]);
+    }, [answer, currentCount, targetNumber, sortedValidAnswers, currentPairIndex]);
 
     // Create a memoized setTarget function
     const setTarget = useCallback(
