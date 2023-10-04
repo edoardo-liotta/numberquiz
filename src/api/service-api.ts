@@ -14,6 +14,7 @@ export enum RoundStatus {
     STOPPING = "STOPPING",
     STOPPED = "STOPPED",
     DISPLAYING_ANSWERS = "DISPLAYING_ANSWERS",
+    ENDED = "ENDED"
 }
 
 export interface RoundResponse extends ApiResponse {
@@ -103,6 +104,21 @@ export const stopRound = async (): Promise<RoundResponse> => {
 
 export const showRoundResults = async (): Promise<RoundResponse> => {
     return fetch(`${(getServiceUrl())}/round/display-answers`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            return Promise.reject()
+        }
+        return Promise.resolve<RoundResponse>(r.json())
+    })
+}
+
+export const awardPoints = async (): Promise<RoundResponse> => {
+    return fetch(`${(getServiceUrl())}/round/award-points`, {
         method: "GET",
         headers: {
             "Accept": "application/json",

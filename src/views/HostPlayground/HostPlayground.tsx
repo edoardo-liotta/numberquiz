@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef} from "react";
 import {
+    awardPoints,
     getRound,
     PlayerAnswer,
     RoundResponse,
@@ -8,7 +9,7 @@ import {
     startRound,
     stopRound
 } from "../../api/service-api";
-import Round from "../../components/Round/Round";
+import HostRound from "../../components/HostRound/HostRound";
 import Idle from "../../components/Idle/Idle";
 
 interface HostPlaygroundProps {
@@ -22,7 +23,7 @@ export interface OnConfirmAnswerProps {
 
 const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProps) => {
     const [error, setError] = React.useState<Error | undefined>();
-    const [roundNumber, setRoundNumber] = React.useState<number>(1);
+    const [roundNumber, _] = React.useState<number>(1);
     const [roundStatus, setRoundStatus] = React.useState<RoundStatus | undefined>()
     const [question, setQuestion] = React.useState<string | undefined>(props.initialQuestion)
     const [answer, setAnswer] = React.useState<number | undefined>()
@@ -71,6 +72,13 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         })
     }
 
+    const triggerAwardPoints = () => {
+        setError(undefined)
+        awardPoints().then(setRoundState).catch(e => {
+            setError(e)
+        })
+    }
+
     useEffect(() => {
         setError(undefined)
         getRound().then(setRoundState).catch(e => {
@@ -89,8 +97,9 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
             <Idle />
         }
         {roundStatus && question && answer &&
-            <Round roundStatus={roundStatus} question={question} answer={answer} providedAnswers={providedAnswers}
-                   onTriggerStartRound={triggerStartRound} onTriggerStopRound={triggerStopRound} onTriggerDisplayAnswers={triggerDisplayAnswers} />
+            <HostRound roundStatus={roundStatus} question={question} answer={answer} providedAnswers={providedAnswers}
+                       onTriggerStartRound={triggerStartRound} onTriggerStopRound={triggerStopRound}
+                       onTriggerDisplayAnswers={triggerDisplayAnswers} onTriggerAwardPoints={triggerAwardPoints} />
         }
         {error &&
             <div className="error">Error: {error.message}</div>

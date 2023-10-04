@@ -1,6 +1,6 @@
 import React from "react";
 import {PlayerAnswer, RoundStatus} from "../../api/service-api";
-import './Round.css'
+import './HostRound.css'
 
 
 interface RoundProps {
@@ -11,16 +11,18 @@ interface RoundProps {
     onTriggerStartRound?: () => void;
     onTriggerStopRound?: () => void;
     onTriggerDisplayAnswers?: () => void;
+    onTriggerAwardPoints?: () => void;
 }
 
-const Round: React.FC<RoundProps> = ({
+const HostRound: React.FC<RoundProps> = ({
                                          roundStatus,
                                          question,
                                          answer,
                                          providedAnswers,
                                          onTriggerStartRound,
                                          onTriggerStopRound,
-                                         onTriggerDisplayAnswers
+                                         onTriggerDisplayAnswers,
+                                         onTriggerAwardPoints
                                      }: RoundProps) => {
     const [answerVisible, setAnswerVisible] = React.useState<boolean>(false)
 
@@ -52,7 +54,14 @@ const Round: React.FC<RoundProps> = ({
             {roundStatus === RoundStatus.STOPPED &&
                 <div>
                   <button id={"host-round-show-results-button"} className={"host-round-status-button"}
-                          onClick={onTriggerDisplayAnswers}>Mostra i risultati
+                          onClick={onTriggerDisplayAnswers}>Rivela la risposta
+                  </button>
+                </div>
+            }
+            {roundStatus === RoundStatus.DISPLAYING_ANSWERS &&
+                <div>
+                  <button id={"host-round-award-points-button"} className={"host-round-status-button"}
+                          onClick={onTriggerAwardPoints}>Assegna i punti
                   </button>
                 </div>
             }
@@ -68,4 +77,4 @@ const Round: React.FC<RoundProps> = ({
     </div>
 }
 
-export default Round;
+export default HostRound;

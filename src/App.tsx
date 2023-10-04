@@ -19,7 +19,7 @@ function App() {
                     <Route path="/host" element={<HostApp />}>Host</Route>
                     <Route path="/screen" element={<ScreenApp />}>Host</Route>
                     <Route path="/countertest"
-                           element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.STOPPED}
+                           element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.DISPLAYING_ANSWERS}
                                                  question={"Question"} answer={42}
                                                  providedAnswers={[
                                                      {playerName: "No answer", providedAnswer: 0},
