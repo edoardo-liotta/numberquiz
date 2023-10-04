@@ -134,20 +134,36 @@ const ScreenRound: React.FC<CounterProps> = ({
 
             <ul className={"screen-round-players-container"}>
                 {providedAnswers && providedAnswers.map(function (item) {
+                    const numerator = Math.min(item.providedAnswer || 0, currentCount)
+                    const tweakedNumerator = (item.providedAnswer && answer && doneTicking && (item.providedAnswer === answer)) ? numerator + 5 : numerator
+
+                    const denominator = Math.max((item.providedAnswer || 1), currentCount)
+                    const anyExactAnswer = providedAnswers.find((playerAnswer) => playerAnswer.providedAnswer === (answer || 0))
+                    const tweakedDenominator = (anyExactAnswer && doneTicking) ? denominator + 5 : denominator
                     const overlayStyle: React.CSSProperties = {
                         position: 'absolute',
-                        width: `calc(${Math.min(((item.providedAnswer && (item.providedAnswer > 0 && currentCount * 100 / item.providedAnswer)) || 0), 100)}% - 16px)`,
+                        width: `calc(${Math.min(((item.providedAnswer && (item.providedAnswer > 0 && tweakedNumerator * 100 / tweakedDenominator)) || 0), 100)}% - 16px)`,
                         height: 'calc(100% - 16px)',
                         backgroundColor: 'blue',
-                        opacity: 0.3, // Adjust the opacity as needed
-                        display: (item.providedAnswer && (item.providedAnswer >= currentCount) && !doneTicking) || false ? 'block' : 'none',
+                        opacity: 0.25, // Adjust the opacity as needed
+                        display: (!doneTicking || (item.providedAnswer && (item.providedAnswer <= (answer || 0)))) || false ? 'block' : 'none',
+                    };
+
+                    const goldOverlayStyle: React.CSSProperties = {
+                        float: 'right',
+                        width: `calc(5% - 16px)`,
+                        height: '100%',
+                        backgroundColor: 'darkgoldenrod',
+                        display: (doneTicking && (item.providedAnswer && (item.providedAnswer === (answer || 0)))) || false ? 'block' : 'none',
                     };
 
                     return <li
                         key={item.playerName}
                         style={{position: 'relative'}}
                         className={`screen-round-player ${(isDisplayingAnswers && (!item.providedAnswer || (item.providedAnswer === 0 || item.providedAnswer < currentCount)) && "under") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer > answer && doneTicking && "over") || ""} ${(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && "exact") || ""}`}>
-                        <div style={overlayStyle}></div>
+                        <div style={overlayStyle}>
+                            <div style={goldOverlayStyle}></div>
+                        </div>
                         <div
                             className={"screen-round-player-name"}>{item.playerName}{(isDisplayingAnswers && item.providedAnswer && item.providedAnswer === answer && doneTicking && " ⭐") || ""}</div>
                         <div

@@ -87,7 +87,7 @@
     border-bottom-style: dashed;
 }
 
-.screen-round-player.under {
+/*.screen-round-player.under {
     background-color: dimgray;
     color: white;
 }
@@ -95,11 +95,10 @@
 .screen-round-player.exact {
     background-color: darkblue;
     color: white;
-}
+} */
 
 .screen-round-player.over {
-    background-color: darkred;
-    color: white;
+    color: darkred;
 }
 
 .screen-round-error {

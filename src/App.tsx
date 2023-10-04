@@ -23,7 +23,7 @@ function App() {
                                                  question={"Expect 42"} answer={42}
                                                  providedAnswers={[
                                                      {playerName: "No answer", providedAnswer: 0},
-                                                     {playerName: "Under", providedAnswer: 10},
+                                                     {playerName: "Under", providedAnswer: 30},
                                                      {playerName: "Exact", providedAnswer: 42},
                                                      {playerName: "Over", providedAnswer: 50}
                                                  ]} />} />
