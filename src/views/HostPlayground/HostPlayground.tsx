@@ -23,7 +23,7 @@ export interface OnConfirmAnswerProps {
 
 const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProps) => {
     const [error, setError] = React.useState<Error | undefined>();
-    const [roundNumber, _] = React.useState<number>(1);
+    const [roundNumber] = React.useState<number>(1);
     const [roundStatus, setRoundStatus] = React.useState<RoundStatus | undefined>()
     const [question, setQuestion] = React.useState<string | undefined>(props.initialQuestion)
     const [answer, setAnswer] = React.useState<number | undefined>()

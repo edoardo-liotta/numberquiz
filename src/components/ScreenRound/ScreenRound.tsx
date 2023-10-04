@@ -55,9 +55,13 @@ const ScreenRound: React.FC<CounterProps> = ({
                     clearInterval(intervalRef.current);
 
                     // Check if there's a next pair to target, and if so, update the target
-                    if (currentCount < (answer || 0) && currentPairIndex < sortedValidAnswers.length - 1) {
-                        setCurrentPairIndex(currentPairIndex + 1);
-                        setTargetNumber(sortedValidAnswers[currentPairIndex + 1]);
+                    if (currentCount < (answer || 0)) {
+                        if (currentPairIndex < sortedValidAnswers.length - 1) {
+                            setCurrentPairIndex(currentPairIndex + 1);
+                            setTargetNumber(sortedValidAnswers[currentPairIndex + 1]);
+                        } else {
+                            setTargetNumber(answer || 0);
+                        }
                     } else {
                         // If it's the last tick, set the extra tick in progress and stop the animation
                         setDoneTicking(true);

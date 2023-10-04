@@ -15,18 +15,27 @@ function App() {
             <HashRouter>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/play" element={<PlayerApp />}>Play</Route>
-                    <Route path="/host" element={<HostApp />}>Host</Route>
-                    <Route path="/screen" element={<ScreenApp />}>Host</Route>
+                    <Route path="/play" element={<PlayerApp />} />
+                    <Route path="/host" element={<HostApp />} />
+                    <Route path="/screen" element={<ScreenApp />} />
                     <Route path="/countertest"
                            element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.DISPLAYING_ANSWERS}
-                                                 question={"Question"} answer={42}
+                                                 question={"Expect 42"} answer={42}
                                                  providedAnswers={[
                                                      {playerName: "No answer", providedAnswer: 0},
                                                      {playerName: "Under", providedAnswer: 10},
                                                      {playerName: "Exact", providedAnswer: 42},
                                                      {playerName: "Over", providedAnswer: 50}
-                                                 ]} />}>Counter Test</Route>
+                                                 ]} />} />
+                    <Route path="/countertest-onlyunder"
+                           element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.DISPLAYING_ANSWERS}
+                                                 question={"Expect 42"} answer={42}
+                                                 providedAnswers={[
+                                                     {playerName: "No answer", providedAnswer: 0},
+                                                     {playerName: "Under1", providedAnswer: 10},
+                                                     {playerName: "Under2", providedAnswer: 15},
+                                                     {playerName: "Under3", providedAnswer: 30}
+                                                 ]} />} />
                 </Routes>
             </HashRouter>
         </div>
@@ -47,7 +56,10 @@ const Home: React.FC = () => {
                     <Link to="/screen">Screen</Link>
                 </li>
                 <li>
-                    <Link to="/countertest">Counter test</Link>
+                    <Link to="/countertest">Counter test: Under, exact, over</Link>
+                </li>
+                <li>
+                    <Link to="/countertest-onlyunder">Counter test: only under</Link>
                 </li>
             </ul>
         </nav>
