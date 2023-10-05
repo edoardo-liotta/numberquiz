@@ -1,8 +1,10 @@
-import React, {useCallback, useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import Idle from "../../components/Idle/Idle";
 import WebSocketClient from "../../components/WebSocketClient/WebSocketClient";
 import {getRound, PlayerAnswer, RoundResponse, RoundStatus} from "../../api/service-api";
 import ScreenRound from "../../components/ScreenRound/ScreenRound";
+import QRCodeGenerator from "../../components/QRCodeGenerator/QRCodeGenerator";
+import {getClientUrl, getServiceUrl} from "../../api/config-api";
 
 interface ScreenPlaygroundProps {
     isDebug?: boolean;
@@ -17,6 +19,10 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
     const [answer, setAnswer] = React.useState<number | undefined>()
     const [providedAnswers, setProvidedAnswers] = React.useState<PlayerAnswer[]>([])
     const fetchInterval = useRef<NodeJS.Timeout | null>(null);
+
+    const joinLink = useMemo(() => {
+        return getClientUrl() + "/#/welcome?serviceUrl=" + encodeURIComponent(getServiceUrl())
+    }, [])
 
     const setRoundState = useCallback((roundResponse: RoundResponse) => {
         setRoundNumber(roundResponse.roundNumber)
@@ -80,6 +86,8 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
               </div>
             </>}
         </div>
+        {joinLink}
+        <QRCodeGenerator url={joinLink} />
         <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived}
                          isDebug={props.isDebug}
                          latestMessage={latestMessage} />
