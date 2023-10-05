@@ -60,7 +60,7 @@ const ScreenRound: React.FC<CounterProps> = ({
                             setCurrentPairIndex(currentPairIndex + 1);
                             setTargetNumber(sortedValidAnswers[currentPairIndex + 1]);
                         } else {
-                            setTargetNumber(answer || 0);
+                            setTargetNumber((answer || 0) + 10);
                         }
                     } else {
                         // If it's the last tick, set the extra tick in progress and stop the animation
