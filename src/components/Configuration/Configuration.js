@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  getClientUrl,
   getConfiguration,
   getDeviceId,
   getPlayerId,
@@ -8,6 +9,7 @@ import {
   resetConfiguration,
   setConfiguration
 } from '../../api/config-api';
+
 
 const Configuration = (props) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
@@ -28,6 +30,10 @@ const Configuration = (props) => {
     if (serviceUrlField) {
       newConfig.serviceUrl = serviceUrlField.value
     }
+    const clientUrlField = document.getElementById("config-clientUrl")
+    if (clientUrlField) {
+      newConfig.clientUrl = clientUrlField.value
+    }
     setConfiguration(newConfig)
     if (props.onSave) {
       props.onSave(newConfig)
@@ -38,6 +44,12 @@ const Configuration = (props) => {
   const resetConfig = () => {
     resetConfiguration()
   }
+
+  useEffect(() => {
+    if (props.autoOpen === true) {
+      triggerEditDialogOpen()
+    }
+  }, [props.autoOpen]);
 
   return <>
     <Button onClick={triggerEditDialogOpen} variant="outlined">Configure</Button>
@@ -68,7 +80,15 @@ const Configuration = (props) => {
             type="url"
             fullWidth
             variant="standard"
-            defaultValue={getServiceUrl()}
+            defaultValue={props.serviceUrl || getServiceUrl()}
+        />
+        <TextField
+            id="config-clientUrl"
+            label="Client URL"
+            type="url"
+            fullWidth
+            variant="standard"
+            defaultValue={props.clientUrl || getClientUrl()}
         />
       </DialogContent>
       <DialogActions>

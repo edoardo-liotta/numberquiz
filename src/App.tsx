@@ -7,6 +7,7 @@ import ScreenApp from "./ScreenApp";
 import Configuration from "./components/Configuration/Configuration";
 import ScreenRound from "./components/ScreenRound/ScreenRound";
 import {RoundStatus} from "./api/service-api";
+import WelcomeApp from "./WelcomeApp";
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
                     <Route path="/play" element={<PlayerApp />} />
                     <Route path="/host" element={<HostApp />} />
                     <Route path="/screen" element={<ScreenApp />} />
+                    <Route path="/welcome" element={<WelcomeApp />} />
                     <Route path="/countertest"
                            element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.DISPLAYING_ANSWERS}
                                                  question={"Expect 42"} answer={42}
@@ -54,6 +56,9 @@ const Home: React.FC = () => {
                 </li>
                 <li>
                     <Link to="/screen">Screen</Link>
+                </li>
+                <li>
+                    <Link to="/welcome">Welcome</Link>
                 </li>
                 <li>
                     <Link to="/countertest">Counter test: Under, exact, over</Link>
