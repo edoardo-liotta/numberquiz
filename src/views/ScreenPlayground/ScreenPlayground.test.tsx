@@ -1,6 +1,7 @@
 import {act, render, waitFor} from "@testing-library/react";
 import * as serviceApi from "../../api/service-api";
 import {RoundStatus} from "../../api/service-api";
+import * as configApi from "../../api/config-api";
 import React from "react";
 import {Server} from "mock-socket";
 import ScreenPlayground from "./ScreenPlayground";
@@ -102,4 +103,14 @@ describe('Screen Playground component', () => {
         await act(() => jest.advanceTimersByTime(1000))
         expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
     })
+
+    it('should display the qrcode section', async () => {
+        jest.spyOn(configApi, 'getClientUrl').mockImplementation(() => "http://client.url")
+        jest.spyOn(configApi, 'getServiceUrl').mockImplementation(() => "http://server.url")
+
+        const {container, findByText} = render(<ScreenPlayground />);
+        expect(container.querySelector('div#screen-qrcode-container')).toBeInTheDocument();
+        const findByText1 = await act(() => findByText("http://client.url/#/welcome?serviceUrl=http%3A%2F%2Fserver.url"));
+        expect(findByText1).toBeInTheDocument();
+    });
 })
