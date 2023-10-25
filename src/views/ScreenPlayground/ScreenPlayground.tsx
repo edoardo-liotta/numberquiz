@@ -5,6 +5,7 @@ import {getRound, PlayerAnswer, RoundResponse, RoundStatus} from "../../api/serv
 import ScreenRound from "../../components/ScreenRound/ScreenRound";
 import QRCodeGenerator from "../../components/QRCodeGenerator/QRCodeGenerator";
 import {getClientUrl, getServiceUrl} from "../../api/config-api";
+import "./ScreenPlayground.css"
 
 interface ScreenPlaygroundProps {
     isDebug?: boolean;
@@ -86,8 +87,9 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
               </div>
             </>}
         </div>
-        {joinLink}
-        <QRCodeGenerator url={joinLink} />
+        <div id={"screen-qrcode-container"}>
+            <QRCodeGenerator url={joinLink} />
+        </div>
         <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived}
                          isDebug={props.isDebug}
                          latestMessage={latestMessage} />
