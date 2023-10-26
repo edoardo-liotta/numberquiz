@@ -15,7 +15,7 @@ const ScreenLeaderboard: React.FC<CounterProps> = ({providedAnswers}) => {
         <div className={"screen-round-container"}>
             <div className={"screen-round-question-container"}>
                 <div className={"screen-round-question"}>Classifica</div>
-                <div className={'screen-round-answer'}>0</div>
+                <div className={'screen-round-answer'}>&nbsp;</div>
             </div>
 
             <table className={"leaderboard-round-players-container"}>
@@ -31,14 +31,13 @@ const ScreenLeaderboard: React.FC<CounterProps> = ({providedAnswers}) => {
                 <tbody>
 
                 {providedAnswers && providedAnswers.map(function (item) {
-                    const numerator = item.totalScore
-                    const denominator = Math.max(topScore, 1)
                     const overlayStyle: React.CSSProperties = {
                         position: 'absolute',
-                        width: `calc(${Math.min((numerator * 100.0 / denominator), 100)}% - 16px)`,
-                        height: 'calc(100% - 12px)',
+                        width: `calc(${Math.min((item.totalScore * 100.0 / Math.max(topScore, 1)), 100)}% - 8px)`,
+                        height: 'calc(100% - 8px)',
                         backgroundColor: 'blue',
                         opacity: 0.25, // Adjust the opacity as needed
+                        translate: "0 -50%"
                     };
 
                     const goldOverlayStyle: React.CSSProperties = {
