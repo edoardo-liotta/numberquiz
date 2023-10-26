@@ -1,4 +1,16 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect, useState } from 'react';
 import {
   getClientUrl,
@@ -53,7 +65,6 @@ const Configuration = (props) => {
 
   return <>
     <Button onClick={triggerEditDialogOpen} variant="outlined">Configure</Button>
-    <Button onClick={resetConfig} variant="outlined">Reset configuration</Button>
     <Dialog open={editDialogOpen} onClose={triggerEditDialogClose}>
       <DialogTitle>Configurazione</DialogTitle>
       <DialogContent>
@@ -66,30 +77,42 @@ const Configuration = (props) => {
             variant="standard"
             defaultValue={getPlayerId()}
         />
-        <TextField
-            id="config-deviceId"
-            label="ID del dispositivo"
-            type="text"
-            fullWidth
-            variant="standard"
-            defaultValue={getDeviceId()}
-        />
-        <TextField
-            id="config-serviceUrl"
-            label="Service URL"
-            type="url"
-            fullWidth
-            variant="standard"
-            defaultValue={props.serviceUrl || getServiceUrl()}
-        />
-        <TextField
-            id="config-clientUrl"
-            label="Client URL"
-            type="url"
-            fullWidth
-            variant="standard"
-            defaultValue={props.clientUrl || getClientUrl()}
-        />
+        <Accordion>
+          <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+          >
+            <Typography>Impostazioni avanzate</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TextField
+                id="config-deviceId"
+                label="ID del dispositivo"
+                type="text"
+                fullWidth
+                variant="standard"
+                defaultValue={getDeviceId()}
+            />
+            <TextField
+                id="config-serviceUrl"
+                label="Service URL"
+                type="url"
+                fullWidth
+                variant="standard"
+                defaultValue={props.serviceUrl || getServiceUrl()}
+            />
+            <TextField
+                id="config-clientUrl"
+                label="Client URL"
+                type="url"
+                fullWidth
+                variant="standard"
+                defaultValue={props.clientUrl || getClientUrl()}
+            />
+            <Button onClick={resetConfig} variant="outlined" color="error">Reset configuration</Button>
+          </AccordionDetails>
+        </Accordion>
       </DialogContent>
       <DialogActions>
         <Button onClick={triggerEditDialogClose}>Annulla</Button>

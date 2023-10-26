@@ -124,7 +124,7 @@ const ScreenRound: React.FC<CounterProps> = ({
                 {isDisplayingQuestion && <div
                     className={`screen-round-answer ${(!isDisplayingAnswers || currentCount === 0) ? "hidden" : ""} ${doneTicking ? "done-ticking" : ""} ${!doneTicking ? "ticking" : ""}`}>
                   <div style={{
-                      width: `${currentCount}vw`,
+                      width: `${currentCount * 2}vw`,
                       backgroundColor: doneTicking ? 'darkblue' : 'blue',
                   }}></div>
                   &nbsp;{currentCount}

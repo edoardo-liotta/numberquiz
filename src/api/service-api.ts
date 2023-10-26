@@ -41,10 +41,12 @@ export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
         body: JSON.stringify({
             playerId: getDeviceId(),
             playerName: getPlayerId(),
-            providedAnswer: answer}),
+            providedAnswer: answer
+        }),
         headers: {
             "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "any"
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
         }
     }).then(r => {
         if (r.status >= 300) {
@@ -62,7 +64,8 @@ export const getRound = async (): Promise<RoundResponse> => {
         method: "GET",
         headers: {
             "Accept": "application/json",
-            "ngrok-skip-browser-warning": "any"
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
         }
     }).then(r => {
         if (r.status >= 300) {
@@ -77,7 +80,8 @@ export const startRound = async (): Promise<RoundResponse> => {
         method: "GET",
         headers: {
             "Accept": "application/json",
-            "ngrok-skip-browser-warning": "any"
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
         }
     }).then(r => {
         if (r.status >= 300) {
@@ -92,7 +96,8 @@ export const stopRound = async (): Promise<RoundResponse> => {
         method: "GET",
         headers: {
             "Accept": "application/json",
-            "ngrok-skip-browser-warning": "any"
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
         }
     }).then(r => {
         if (r.status >= 300) {
@@ -107,7 +112,8 @@ export const showRoundResults = async (): Promise<RoundResponse> => {
         method: "GET",
         headers: {
             "Accept": "application/json",
-            "ngrok-skip-browser-warning": "any"
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
         }
     }).then(r => {
         if (r.status >= 300) {
@@ -122,7 +128,8 @@ export const awardPoints = async (): Promise<RoundResponse> => {
         method: "GET",
         headers: {
             "Accept": "application/json",
-            "ngrok-skip-browser-warning": "any"
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
         }
     }).then(r => {
         if (r.status >= 300) {
