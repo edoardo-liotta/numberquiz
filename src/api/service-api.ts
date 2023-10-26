@@ -30,6 +30,15 @@ export interface PlayerAnswer {
     providedAnswer?: number;
 }
 
+export interface PlayerScore {
+    playerName: string;
+    standardPoints: number;
+    goldPoints: number;
+    exactAnswers: number;
+    overAnswers: number;
+    totalScore: number;
+}
+
 export const createSocketConnection = () => {
     const url = new URL(getServiceUrl());
     return new WebSocket(`${(url.protocol === "https:" ? "wss" : "ws")}://${url.host}/connect`);

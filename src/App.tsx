@@ -8,6 +8,7 @@ import Configuration from "./components/Configuration/Configuration";
 import ScreenRound from "./components/ScreenRound/ScreenRound";
 import {RoundStatus} from "./api/service-api";
 import WelcomeApp from "./WelcomeApp";
+import ScreenLeaderboard from "./components/ScreenLeaderboard/ScreenLeaderboard";
 
 function App() {
 
@@ -38,6 +39,14 @@ function App() {
                                                      {playerName: "Under2", providedAnswer: 15},
                                                      {playerName: "Under3", providedAnswer: 30}
                                                  ]} />} />
+                    <Route path="/leaderboardtest"
+                           element={<ScreenLeaderboard providedAnswers={[
+                               {playerName: "Leader", standardPoints: 30, goldPoints: 0, exactAnswers: 0, overAnswers: 0, totalScore: 30},
+                               {playerName: "Runner-up", standardPoints: 15, goldPoints: 5, exactAnswers: 1, overAnswers: 0, totalScore: 20},
+                               {playerName: "Third", standardPoints: 15, goldPoints: 5, exactAnswers: 1, overAnswers: 1, totalScore: 20},
+                               {playerName: "Fourth", standardPoints: 20, goldPoints: 0, exactAnswers: 0, overAnswers: 0, totalScore: 20},
+                               {playerName: "Last", standardPoints: 5, goldPoints: 5, exactAnswers: 1, overAnswers: 0, totalScore: 10},
+                           ]}/>} />
                 </Routes>
             </HashRouter>
         </div>
@@ -65,6 +74,9 @@ const Home: React.FC = () => {
                 </li>
                 <li>
                     <Link to="/countertest-onlyunder">Counter test: only under</Link>
+                </li>
+                <li>
+                    <Link to="/leaderboardtest">Leaderboard test</Link>
                 </li>
             </ul>
         </nav>
