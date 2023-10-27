@@ -12,13 +12,13 @@ const ScreenLeaderboard: React.FC<CounterProps> = ({providedAnswers}) => {
     }, [providedAnswers])
 
     return <>
-        <div className={"screen-round-container"}>
-            <div className={"screen-round-question-container"}>
-                <div className={"screen-round-question"}>Classifica</div>
-                <div className={'screen-round-answer'}>&nbsp;</div>
+        <div className={"leaderboard-container"}>
+            <div className={"leaderboard-question-container"}>
+                <div className={"leaderboard-question"}>Classifica</div>
+                <div className={'leaderboard-answer'}>&nbsp;</div>
             </div>
 
-            <table className={"leaderboard-round-players-container"}>
+            <table className={"leaderboard-players-container"}>
                 <thead>
                 <tr>
                     <th></th>
@@ -50,16 +50,16 @@ const ScreenLeaderboard: React.FC<CounterProps> = ({providedAnswers}) => {
                     return <tr
                         key={item.playerName}
                         style={{position: 'relative'}}
-                        className={'leaderboard-round-player'}>
+                        className={'leaderboard-player'}>
                         <td style={{display: "inline-flex"}}><div style={overlayStyle}><div style={goldOverlayStyle} /></div></td>
                         <td
-                            className={"screen-round-player-name"}>{item.playerName}</td>
+                            className={"leaderboard-player-name"}>{item.playerName}</td>
                         <td
-                            className={"leaderboard-round-player-answer"}>{item.totalScore}</td>
+                            className={"leaderboard-player-answer"}>{item.totalScore}</td>
                         <td
-                            className={"leaderboard-round-player-answer exact"}>{item.exactAnswers}</td>
+                            className={"leaderboard-player-answer exact"}>{item.exactAnswers}</td>
                         <td
-                            className={"leaderboard-round-player-answer over"}>{item.overAnswers}</td>
+                            className={"leaderboard-player-answer over"}>{item.overAnswers}</td>
                     </tr>
                 })}
                 </tbody>

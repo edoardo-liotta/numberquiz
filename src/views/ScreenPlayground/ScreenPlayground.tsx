@@ -32,7 +32,10 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
         setAnswer(roundResponse.answer)
         setProvidedAnswers(roundResponse.providedAnswers)
         console.log("Round status: " + roundResponse.roundStatus)
-        if ([RoundStatus.STARTED, RoundStatus.STOPPING].includes(roundResponse.roundStatus)) {
+    }, [])
+
+    useEffect(() => {
+        if (roundStatus && [RoundStatus.STARTED, RoundStatus.STOPPING].includes(roundStatus)) {
             console.log("fetch interval: " + fetchInterval.current)
             if (fetchInterval.current === null) {
                 fetchInterval.current = setInterval(() => {
@@ -47,7 +50,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
                 fetchInterval.current = null
             }
         }
-    }, [fetchInterval])
+    }, [roundStatus, setRoundState, fetchInterval])
 
     const handleSocketConnected = useCallback((socket: WebSocket) => {
         setError(undefined)

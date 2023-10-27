@@ -1,4 +1,4 @@
-.screen-round-container {
+.leaderboard-container {
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -7,7 +7,7 @@
     width: 100%;
 }
 
-.screen-round-question-container {
+.leaderboard-question-container {
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
     width: 100%;
 }
 
-.screen-round-question, .screen-round-answer {
+.leaderboard-question, .leaderboard-answer {
     border-radius: 10px;
     border-style: solid;
     border-width: 2px;
@@ -28,21 +28,21 @@
     width: 95%;
 }
 
-.screen-round-question {
+.leaderboard-question {
     border-color: #4caf50;
 }
 
-.screen-round-answer {
+.leaderboard-answer {
     border-color: darkblue;
     display: flex;
     flex-direction: row;
 }
 
-.screen-round-answer.hidden {
+.leaderboard-answer.hidden {
     color: transparent;
 }
 
-.screen-round-status-button {
+.leaderboard-status-button {
     border-radius: 10px;
     border-style: solid;
     height: auto;
@@ -51,7 +51,7 @@
     width: 100%;
 }
 
-.leaderboard-round-players-container {
+.leaderboard-players-container {
     border-collapse: collapse;
     border-radius: 10px;
     border-style: solid;
@@ -63,51 +63,56 @@
     width: 95%;
 }
 
-.leaderboard-round-players-container thead tr {
+.leaderboard-players-container thead tr {
     border-bottom-color: black;
     border-bottom-style: dashed;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.leaderboard-round-player {
+.leaderboard-player {
     padding-block: 8px;
     padding-left: 8px;
     padding-right: 8px;
 }
 
-.leaderboard-round-player:first-of-type {
+.leaderboard-player:first-of-type {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.leaderboard-round-player:last-of-type {
+.leaderboard-player:last-of-type {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-.leaderboard-round-player:not(:last-of-type) {
+.leaderboard-player:not(:last-of-type) {
     border-bottom-color: black;
     border-bottom-style: dashed;
 }
 
-/*.screen-round-player.under {
+/*.leaderboard-player.under {
     background-color: dimgray;
     color: white;
 }
 
-.screen-round-player.exact {
+.leaderboard-player.exact {
     background-color: darkblue;
     color: white;
 } */
 
-.leaderboard-round-player-answer {
+.leaderboard-player-answer {
     text-align: center;
 }
-.leaderboard-round-player-answer.over {
+
+.leaderboard-player-answer.exact {
+    color: darkgoldenrod;
+}
+
+.leaderboard-player-answer.over {
     color: darkred;
 }
 
-.screen-round-error {
+.leaderboard-error {
     color: darkred;
 }
