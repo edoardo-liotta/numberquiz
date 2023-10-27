@@ -68,4 +68,18 @@ describe('Round component', () => {
         expect(getByText("Antonietta")).toBeInTheDocument()
         expect(getByText("10")).toBeInTheDocument()
     });
+
+    it('should advance to the next round when clicking the button', async () => {
+        const onTriggerAdvanceToNextRound = jest.fn();
+        const {getByText} = render(<HostRound roundStatus={RoundStatus.DISPLAYING_ANSWERS} question={"Domanda"} answer={42} providedAnswers={[]} onTriggerAdvanceToNextRound={onTriggerAdvanceToNextRound} />);
+
+        await waitFor(() => {
+            getByText('Prossimo round')
+        })
+
+        const goToNextRoundButton = getByText('Prossimo round')
+        fireEvent.click(goToNextRoundButton)
+
+        expect(onTriggerAdvanceToNextRound).toHaveBeenCalled();
+    });
 });

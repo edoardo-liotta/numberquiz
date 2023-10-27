@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef} from "react";
 import * as serviceApi from "../../api/service-api";
 import {
+    advanceToNextRound,
     awardPoints,
     getRound,
     PlayerAnswer,
@@ -81,6 +82,12 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         })
     }
 
+    const triggerAdvanceToNextRound = useCallback(() => {
+        advanceToNextRound().then(setRoundState).catch(e => {
+            setError(e)
+        })
+    }, [])
+
     const triggerShowLeaderboard = useCallback(() => {
         serviceApi.triggerShowLeaderboard().then(() => {})
     }, [])
@@ -109,7 +116,8 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         {roundStatus && question && answer &&
             <HostRound roundStatus={roundStatus} question={question} answer={answer} providedAnswers={providedAnswers}
                        onTriggerStartRound={triggerStartRound} onTriggerStopRound={triggerStopRound}
-                       onTriggerDisplayAnswers={triggerDisplayAnswers} onTriggerAwardPoints={triggerAwardPoints} />
+                       onTriggerDisplayAnswers={triggerDisplayAnswers} onTriggerAwardPoints={triggerAwardPoints}
+                       onTriggerAdvanceToNextRound={triggerAdvanceToNextRound} />
         }
         {error &&
             <div className="error">Error: {error.message}</div>

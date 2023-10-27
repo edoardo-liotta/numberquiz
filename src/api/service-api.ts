@@ -196,3 +196,19 @@ export const triggerShowRound = async (): Promise<ApiResponse> => {
         return Promise.resolve<ApiResponse>(r.json())
     })
 }
+
+export const advanceToNextRound = async (): Promise<RoundResponse> => {
+    return fetch(`${(getServiceUrl())}/host/advance-to-next-round`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any",
+            "bypass-tunnel-reminder": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            return Promise.reject()
+        }
+        return Promise.resolve<RoundResponse>(r.json())
+    })
+}

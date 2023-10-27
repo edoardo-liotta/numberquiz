@@ -12,18 +12,20 @@ interface RoundProps {
     onTriggerStopRound?: () => void;
     onTriggerDisplayAnswers?: () => void;
     onTriggerAwardPoints?: () => void;
+    onTriggerAdvanceToNextRound?: () => void;
 }
 
 const HostRound: React.FC<RoundProps> = ({
-                                         roundStatus,
-                                         question,
-                                         answer,
-                                         providedAnswers,
-                                         onTriggerStartRound,
-                                         onTriggerStopRound,
-                                         onTriggerDisplayAnswers,
-                                         onTriggerAwardPoints
-                                     }: RoundProps) => {
+                                             roundStatus,
+                                             question,
+                                             answer,
+                                             providedAnswers,
+                                             onTriggerStartRound,
+                                             onTriggerStopRound,
+                                             onTriggerDisplayAnswers,
+                                             onTriggerAwardPoints,
+                                             onTriggerAdvanceToNextRound
+                                         }: RoundProps) => {
     const [answerVisible, setAnswerVisible] = React.useState<boolean>(false)
 
     const toggleAnswerVisible = () => {
@@ -62,6 +64,9 @@ const HostRound: React.FC<RoundProps> = ({
                 <div>
                   <button id={"host-round-award-points-button"} className={"host-round-status-button"}
                           onClick={onTriggerAwardPoints}>Assegna i punti
+                  </button>
+                  <button id={"host-round-next-round-button"} className={"host-round-status-button"}
+                          onClick={onTriggerAdvanceToNextRound}>Prossimo round
                   </button>
                 </div>
             }
