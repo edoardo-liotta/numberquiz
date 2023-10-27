@@ -7,7 +7,7 @@ import {Server} from "mock-socket";
 import ScreenPlayground from "./ScreenPlayground";
 
 describe('Screen Playground component', () => {
-    let createSocketConnectionMock;
+    let createSocketConnectionMock: jest.SpyInstance<WebSocket, []>;
     let mockServer: Server;
 
     beforeEach(() => {
@@ -20,14 +20,14 @@ describe('Screen Playground component', () => {
             providedAnswers: []
         });
 
-        createSocketConnectionMock = jest.spyOn(serviceApi, 'createSocketConnection').mockImplementation(() => {
-            return new WebSocket('ws://ScreenPlayground:8080/')
-        });
-
         // Set up a mock WebSocket server
-        mockServer = new Server('ws://ScreenPlayground:8080/', {mock: false});
+        mockServer = new Server('ws://ScreenPlayground:8080/', {mock: true});
         mockServer.on('connection', _ => {
             console.log("Mock server received a connection");
+        });
+
+        createSocketConnectionMock = jest.spyOn(serviceApi, 'createSocketConnection').mockImplementation(() => {
+            return new WebSocket('ws://ScreenPlayground:8080/')
         });
     });
 
@@ -87,7 +87,9 @@ describe('Screen Playground component', () => {
             }]
         });
         const component = render(<ScreenPlayground />);
-        await act(() => {component.container.querySelector('div')})
+        await act(() => {
+            component.container.querySelector('div')
+        })
 
         expect(serviceApi.getRound).toHaveBeenCalledTimes(1);
         await act(() => jest.advanceTimersByTime(1000))
@@ -97,11 +99,11 @@ describe('Screen Playground component', () => {
         await act(() => jest.advanceTimersByTime(1000))
         expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
         await act(() => jest.advanceTimersByTime(1000))
-        expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(5);
         await act(() => jest.advanceTimersByTime(1000))
-        expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(5);
         await act(() => jest.advanceTimersByTime(1000))
-        expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(5);
     })
 
     it('should display the qrcode section', async () => {
@@ -113,4 +115,54 @@ describe('Screen Playground component', () => {
         const findByText1 = await act(() => findByText("http://client.url/#/welcome?serviceUrl=http%3A%2F%2Fserver.url"));
         expect(findByText1).toBeInTheDocument();
     });
+
+    it('should display the leaderboard section', async () => {
+        jest.useFakeTimers()
+        jest.spyOn(serviceApi, 'getLeaderboard').mockResolvedValue({
+            status: 200, leaderboard: [
+                {
+                    playerName: "Leader",
+                    standardPoints: 30,
+                    goldPoints: 0,
+                    exactAnswers: 0,
+                    overAnswers: 0,
+                    totalScore: 30
+                },
+                {
+                    playerName: "Runner-up",
+                    standardPoints: 15,
+                    goldPoints: 5,
+                    exactAnswers: 1,
+                    overAnswers: 0,
+                    totalScore: 20
+                },
+                {
+                    playerName: "Third",
+                    standardPoints: 15,
+                    goldPoints: 5,
+                    exactAnswers: 1,
+                    overAnswers: 1,
+                    totalScore: 20
+                },
+                {
+                    playerName: "Fourth",
+                    standardPoints: 20,
+                    goldPoints: 0,
+                    exactAnswers: 0,
+                    overAnswers: 0,
+                    totalScore: 20
+                },
+                {playerName: "Last", standardPoints: 5, goldPoints: 5, exactAnswers: 1, overAnswers: 0, totalScore: 10},
+            ]
+        })
+
+        const {getByText} = render(<ScreenPlayground />);
+
+        await act(() => mockServer.emit('message', 'show-leaderboard'));
+        await act(() => jest.advanceTimersByTime(1000))
+
+        expect(createSocketConnectionMock).toHaveBeenCalled();
+        expect(await act(() => getByText("Leader"))).toBeInTheDocument();
+        expect(serviceApi.getLeaderboard).toHaveBeenCalled();
+    })
 })

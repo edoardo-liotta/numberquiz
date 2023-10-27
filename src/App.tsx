@@ -40,7 +40,7 @@ function App() {
                                                      {playerName: "Under3", providedAnswer: 30}
                                                  ]} />} />
                     <Route path="/leaderboardtest"
-                           element={<ScreenLeaderboard providedAnswers={[
+                           element={<ScreenLeaderboard playerScores={[
                                {playerName: "Leader", standardPoints: 30, goldPoints: 0, exactAnswers: 0, overAnswers: 0, totalScore: 30},
                                {playerName: "Runner-up", standardPoints: 15, goldPoints: 5, exactAnswers: 1, overAnswers: 0, totalScore: 20},
                                {playerName: "Third", standardPoints: 15, goldPoints: 5, exactAnswers: 1, overAnswers: 1, totalScore: 20},

@@ -3,13 +3,13 @@ import {PlayerScore} from "../../api/service-api";
 import './ScreenLeaderboard.css'
 
 interface CounterProps {
-    providedAnswers: PlayerScore[];
+    playerScores: PlayerScore[];
 }
 
-const ScreenLeaderboard: React.FC<CounterProps> = ({providedAnswers}) => {
+const ScreenLeaderboard: React.FC<CounterProps> = ({playerScores}) => {
     const topScore = useMemo(() => {
-        return providedAnswers.at(0)?.totalScore || 0
-    }, [providedAnswers])
+        return playerScores.at(0)?.totalScore || 0
+    }, [playerScores])
 
     return <>
         <div className={"leaderboard-container"}>
@@ -30,7 +30,7 @@ const ScreenLeaderboard: React.FC<CounterProps> = ({providedAnswers}) => {
                 </thead>
                 <tbody>
 
-                {providedAnswers && providedAnswers.map(function (item) {
+                {playerScores && playerScores.map(function (item) {
                     const overlayStyle: React.CSSProperties = {
                         position: 'absolute',
                         width: `calc(${Math.min((item.totalScore * 100.0 / Math.max(topScore, 1)), 100)}% - 8px)`,

@@ -1,11 +1,20 @@
 import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import Idle from "../../components/Idle/Idle";
 import WebSocketClient from "../../components/WebSocketClient/WebSocketClient";
-import {getRound, PlayerAnswer, RoundResponse, RoundStatus} from "../../api/service-api";
+import {
+    getLeaderboard,
+    getRound,
+    LeaderboardResponse,
+    PlayerAnswer,
+    PlayerScore,
+    RoundResponse,
+    RoundStatus
+} from "../../api/service-api";
 import ScreenRound from "../../components/ScreenRound/ScreenRound";
 import QRCodeGenerator from "../../components/QRCodeGenerator/QRCodeGenerator";
 import {getClientUrl, getServiceUrl} from "../../api/config-api";
 import "./ScreenPlayground.css"
+import ScreenLeaderboard from "../../components/ScreenLeaderboard/ScreenLeaderboard";
 
 interface ScreenPlaygroundProps {
     isDebug?: boolean;
@@ -14,11 +23,12 @@ interface ScreenPlaygroundProps {
 const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygroundProps) => {
     const [error, setError] = React.useState<Error | undefined>();
     const [latestMessage, setLatestMessage] = React.useState<string>()
-    const [roundNumber, setRoundNumber] = React.useState<number>(1);
+    const [roundNumber, setRoundNumber] = React.useState<number | undefined>(1);
     const [roundStatus, setRoundStatus] = React.useState<RoundStatus | undefined>()
     const [question, setQuestion] = React.useState<string | undefined>()
     const [answer, setAnswer] = React.useState<number | undefined>()
     const [providedAnswers, setProvidedAnswers] = React.useState<PlayerAnswer[]>([])
+    const [leaderboard, setLeaderboard] = React.useState<PlayerScore[]>([])
     const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
     const joinLink = useMemo(() => {
@@ -26,12 +36,20 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
     }, [])
 
     const setRoundState = useCallback((roundResponse: RoundResponse) => {
+        setError(undefined)
         setRoundNumber(roundResponse.roundNumber)
         setRoundStatus(roundResponse.roundStatus)
         setQuestion(roundResponse.question)
         setAnswer(roundResponse.answer)
         setProvidedAnswers(roundResponse.providedAnswers)
         console.log("Round status: " + roundResponse.roundStatus)
+    }, [])
+
+    const showLeaderboard = useCallback((leaderboard: LeaderboardResponse) => {
+        setError(undefined)
+        setRoundNumber(undefined)
+        setLeaderboard(leaderboard.leaderboard)
+        console.log("Leaderboard: " + leaderboard.leaderboard)
     }, [])
 
     useEffect(() => {
@@ -64,22 +82,30 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
             getRound().then(setRoundState).catch(e => {
                 setError(e)
             })
+        } else if (message.startsWith("show-leaderboard")) {
+            getLeaderboard().then(showLeaderboard).catch(e => {
+                setError(e)
+            })
         }
-    }, [setRoundState])
+    }, [setRoundState, showLeaderboard])
 
     useEffect(() => {
-        setError(undefined)
-        getRound().then(setRoundState).catch(e => {
-            setError(e)
-        })
+        if (roundNumber) {
+            getRound().then(setRoundState).catch(e => {
+                setError(e)
+            })
+        }
     }, [roundNumber, setRoundState])
 
     return <>
         <div className={"screen-playground-container"}>
-            {!roundStatus && <>
+            {!roundNumber && !leaderboard && <>
               <Idle />
             </>}
-            {roundStatus && question && <>
+            {!roundNumber && leaderboard && <>
+              <ScreenLeaderboard playerScores={leaderboard} />
+            </>}
+            {roundStatus && roundNumber && question && <>
               <ScreenRound roundNumber={roundNumber} roundStatus={roundStatus} question={question} answer={answer}
                            providedAnswers={providedAnswers} />
             </>}

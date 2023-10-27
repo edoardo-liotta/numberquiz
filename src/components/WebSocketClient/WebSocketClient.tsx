@@ -53,14 +53,10 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({
 
             socketConnection.onerror = (event) => {
                 console.log("WebSocket error");
-                console.log(event);
+                console.log(event.target);
                 disconnect()
             };
 
-            socketConnection.onerror = () => {
-                console.log("WebSocket error");
-                disconnect()
-            }
             socketConnection.onclose = () => {
                 disconnect()
             }

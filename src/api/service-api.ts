@@ -25,6 +25,10 @@ export interface RoundResponse extends ApiResponse {
     providedAnswers: PlayerAnswer[];
 }
 
+export interface LeaderboardResponse extends ApiResponse {
+    leaderboard: PlayerScore[];
+}
+
 export interface PlayerAnswer {
     playerName: string;
     providedAnswer?: number;
@@ -146,4 +150,31 @@ export const awardPoints = async (): Promise<RoundResponse> => {
         }
         return Promise.resolve<RoundResponse>(r.json())
     })
+}
+
+export const getLeaderboard = async (): Promise<LeaderboardResponse> => {
+    return Promise.resolve<LeaderboardResponse>({
+        status: 200,
+        leaderboard: [{
+            playerName: "test",
+            standardPoints: 1,
+            goldPoints: 2,
+            exactAnswers: 3,
+            overAnswers: 4,
+            totalScore: 5
+        }]
+    })
+    /*return fetch(`${(getServiceUrl())}/leaderboard`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            return Promise.reject()
+        }
+        return Promise.resolve<PlayerScore[]>(r.json())
+    })*/
 }
