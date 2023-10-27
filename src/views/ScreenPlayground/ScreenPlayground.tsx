@@ -52,6 +52,36 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
         console.log("Leaderboard: " + leaderboard.leaderboard)
     }, [])
 
+    const handleSocketConnected = useCallback((socket: WebSocket) => {
+        setError(undefined)
+        socket.send("register-screen")
+    }, [])
+
+    const handleMessageReceived = useCallback((message: string) => {
+        console.log("Message received: " + message)
+        setLatestMessage(message)
+        if (message.startsWith("update")) {
+            if (roundNumber) {
+                getRound().then(setRoundState).catch(e => {
+                    setError(e)
+                })
+            } else {
+                getLeaderboard().then(showLeaderboard).catch(e => {
+                    setError(e)
+                })
+            }
+        }
+        else if (message.startsWith("show-round")) {
+            getRound().then(setRoundState).catch(e => {
+                setError(e)
+            })
+        } else if (message.startsWith("show-leaderboard")) {
+            getLeaderboard().then(showLeaderboard).catch(e => {
+                setError(e)
+            })
+        }
+    }, [roundNumber, setRoundState, showLeaderboard])
+
     useEffect(() => {
         if (roundNumber && roundStatus && [RoundStatus.STARTED, RoundStatus.STOPPING].includes(roundStatus)) {
             console.log("fetch interval: " + fetchInterval.current)
@@ -69,25 +99,6 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
             }
         }
     }, [roundNumber, roundStatus, setRoundState, fetchInterval])
-
-    const handleSocketConnected = useCallback((socket: WebSocket) => {
-        setError(undefined)
-        socket.send("register-screen")
-    }, [])
-
-    const handleMessageReceived = useCallback((message: string) => {
-        console.log("Message received: " + message)
-        setLatestMessage(message)
-        if (message.startsWith("update-round")) {
-            getRound().then(setRoundState).catch(e => {
-                setError(e)
-            })
-        } else if (message.startsWith("show-leaderboard")) {
-            getLeaderboard().then(showLeaderboard).catch(e => {
-                setError(e)
-            })
-        }
-    }, [setRoundState, showLeaderboard])
 
     useEffect(() => {
         if (roundNumber) {

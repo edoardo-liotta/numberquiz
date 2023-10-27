@@ -58,6 +58,7 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({
             };
 
             socketConnection.onclose = () => {
+                console.log("Closing WebSocket connection");
                 disconnect()
             }
         }

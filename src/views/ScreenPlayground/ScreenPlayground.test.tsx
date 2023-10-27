@@ -45,7 +45,7 @@ describe('Screen Playground component', () => {
         render(<ScreenPlayground />);
 
         await act(() => {
-            mockServer.emit('message', 'update-round');
+            mockServer.emit('message', 'show-round');
             jest.advanceTimersByTime(1000);
         });
 
@@ -99,11 +99,11 @@ describe('Screen Playground component', () => {
         await act(() => jest.advanceTimersByTime(1000))
         expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
         await act(() => jest.advanceTimersByTime(1000))
-        expect(serviceApi.getRound).toHaveBeenCalledTimes(5);
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
         await act(() => jest.advanceTimersByTime(1000))
-        expect(serviceApi.getRound).toHaveBeenCalledTimes(5);
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
         await act(() => jest.advanceTimersByTime(1000))
-        expect(serviceApi.getRound).toHaveBeenCalledTimes(5);
+        expect(serviceApi.getRound).toHaveBeenCalledTimes(4);
     })
 
     it('should display the qrcode section', async () => {

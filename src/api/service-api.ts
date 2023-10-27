@@ -150,18 +150,7 @@ export const awardPoints = async (): Promise<RoundResponse> => {
 }
 
 export const getLeaderboard = async (): Promise<LeaderboardResponse> => {
-    return Promise.resolve<LeaderboardResponse>({
-        status: 200,
-        leaderboard: [{
-            playerName: "test",
-            standardPoints: 1,
-            goldPoints: 2,
-            exactAnswers: 3,
-            overAnswers: 4,
-            totalScore: 5
-        }]
-    })
-    /*return fetch(`${(getServiceUrl())}/leaderboard`, {
+    return fetch(`${(getServiceUrl())}/leaderboard`, {
         method: "GET",
         headers: {
             "Accept": "application/json",
@@ -172,8 +161,8 @@ export const getLeaderboard = async (): Promise<LeaderboardResponse> => {
         if (r.status >= 300) {
             return Promise.reject()
         }
-        return Promise.resolve<PlayerScore[]>(r.json())
-    })*/
+        return Promise.resolve<LeaderboardResponse>(r.json())
+    })
 }
 
 export const triggerShowLeaderboard = async (): Promise<ApiResponse> => {
