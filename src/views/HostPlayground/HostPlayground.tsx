@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useRef} from "react";
+import * as serviceApi from "../../api/service-api";
 import {
     awardPoints,
     getRound,
@@ -11,6 +12,7 @@ import {
 } from "../../api/service-api";
 import HostRound from "../../components/HostRound/HostRound";
 import Idle from "../../components/Idle/Idle";
+import HostActions from "./HostActions";
 
 interface HostPlaygroundProps {
     initialQuestion?: string;
@@ -79,6 +81,14 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         })
     }
 
+    const triggerShowLeaderboard = useCallback(() => {
+        serviceApi.triggerShowLeaderboard().then(() => {})
+    }, [])
+
+    const triggerShowRound = useCallback(() => {
+        serviceApi.triggerShowRound().then(() => {})
+    }, [])
+
     useEffect(() => {
         setError(undefined)
         getRound().then(setRoundState).catch(e => {
@@ -104,6 +114,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         {error &&
             <div className="error">Error: {error.message}</div>
         }
+        <HostActions onShowLeaderboard={triggerShowLeaderboard} onShowRound={triggerShowRound} />
     </>
 }
 

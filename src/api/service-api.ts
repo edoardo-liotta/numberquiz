@@ -1,9 +1,6 @@
 import {getDeviceId, getPlayerId, getServiceUrl} from './config-api';
 
 export interface ApiResponse {
-    // Define the structure of your API response here
-    // For example, if the response is { message: string }, you can use:
-    // message: string;
     status: number;
 }
 
@@ -177,4 +174,36 @@ export const getLeaderboard = async (): Promise<LeaderboardResponse> => {
         }
         return Promise.resolve<PlayerScore[]>(r.json())
     })*/
+}
+
+export const triggerShowLeaderboard = async (): Promise<ApiResponse> => {
+    return fetch(`${(getServiceUrl())}/host/show-leaderboard`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            return Promise.reject()
+        }
+        return Promise.resolve<ApiResponse>(r.json())
+    })
+}
+
+export const triggerShowRound = async (): Promise<ApiResponse> => {
+    return fetch(`${(getServiceUrl())}/host/show-round`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "any",
+            "Bypass-Tunnel-Reminder": "any"
+        }
+    }).then(r => {
+        if (r.status >= 300) {
+            return Promise.reject()
+        }
+        return Promise.resolve<ApiResponse>(r.json())
+    })
 }
