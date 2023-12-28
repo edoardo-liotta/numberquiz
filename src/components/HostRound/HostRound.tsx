@@ -62,9 +62,6 @@ const HostRound: React.FC<RoundProps> = ({
             }
             {roundStatus === RoundStatus.DISPLAYING_ANSWERS &&
                 <div>
-                  <button id={"host-round-award-points-button"} className={"host-round-status-button"}
-                          onClick={onTriggerAwardPoints}>Assegna i punti
-                  </button>
                   <button id={"host-round-next-round-button"} className={"host-round-status-button"}
                           onClick={onTriggerAdvanceToNextRound}>Prossimo round
                   </button>

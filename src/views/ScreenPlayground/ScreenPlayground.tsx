@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef} from "react";
-import Idle from "../../components/Idle/Idle";
+import ScreenCanvas from "../../components/ScreenCanvas/ScreenCanvas";
 import WebSocketClient from "../../components/WebSocketClient/WebSocketClient";
 import {
     getLeaderboard,
@@ -10,11 +10,9 @@ import {
     RoundResponse,
     RoundStatus
 } from "../../api/service-api";
-import ScreenRound from "../../components/ScreenRound/ScreenRound";
 import QRCodeGenerator from "../../components/QRCodeGenerator/QRCodeGenerator";
 import {getClientUrl, getServiceUrl} from "../../api/config-api";
 import "./ScreenPlayground.css"
-import ScreenLeaderboard from "../../components/ScreenLeaderboard/ScreenLeaderboard";
 
 interface ScreenPlaygroundProps {
     isDebug?: boolean;
@@ -109,34 +107,15 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
     }, [roundNumber, setRoundState])
 
     return <>
-        <div className={"screen-playground-container"}>
-            {!roundNumber && !leaderboard && <>
-              <Idle />
-            </>}
-            {!roundNumber && leaderboard && <>
-              <ScreenLeaderboard playerScores={leaderboard} />
-            </>}
-            {roundStatus && roundNumber && question && <>
-              <ScreenRound roundNumber={roundNumber} roundStatus={roundStatus} question={question} answer={answer}
-                           providedAnswers={providedAnswers} />
-            </>}
-            {error && <>
-              <div className={"screen-playground-error"}>
-                Qualcosa è andato storto. Riprova.<br />
-                  {error.message}
-              </div>
-            </>}
-        </div>
+        <ScreenCanvas error={error} roundNumber={roundNumber} roundStatus={roundStatus} question={question} answer={answer} providedAnswers={providedAnswers} leaderboard={leaderboard} />
         <div id={"screen-qrcode-container"}>
             <QRCodeGenerator url={joinLink} />
         </div>
-        <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived}
-                         isDebug={props.isDebug}
-                         latestMessage={latestMessage} />
+        <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} />
     </>
 }
 
 ScreenPlayground.defaultProps = {
-    isDebug: true
+    isDebug: false
 }
 export default ScreenPlayground;

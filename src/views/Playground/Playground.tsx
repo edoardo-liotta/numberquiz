@@ -32,6 +32,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
             let newQuestion = (message.split("|"))[1];
             if (newQuestion.length > 0) {
                 setCurrentQuestion(newQuestion)
+                setIsDialDisabled(false)
             } else {
                 setCurrentQuestion(undefined)
             }
@@ -69,15 +70,14 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
                 </>}
             </>}
         </div>
-        <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} isDebug={props.isDebug}
-                         latestMessage={latestMessage} />
+        <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} />
         <div className={"playground-vertical"}>Ruota lo schermo in orizzontale</div>
     </>
 }
 
 Playground.defaultProps = {
     initialQuestion: undefined,
-    isDebug: true
+    isDebug: false
 }
 
 export default Playground;

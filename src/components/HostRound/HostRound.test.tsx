@@ -46,20 +46,6 @@ describe('Round component', () => {
         expect(onTriggerDisplayAnswers).toHaveBeenCalled();
     });
 
-    it('should assign the round score when clicking the button', async () => {
-        const onTriggerAwardPoints = jest.fn();
-        const {getByText} = render(<HostRound roundStatus={RoundStatus.DISPLAYING_ANSWERS} question={"Domanda"} answer={42} providedAnswers={[]} onTriggerAwardPoints={onTriggerAwardPoints} />);
-
-        await waitFor(() => {
-            getByText('Assegna i punti')
-        })
-
-        const displayAnswersButton = getByText('Assegna i punti')
-        fireEvent.click(displayAnswersButton)
-
-        expect(onTriggerAwardPoints).toHaveBeenCalled();
-    });
-
     it('should render the provided answers', async () => {
         const {getByText} = render(<HostRound roundStatus={RoundStatus.IDLE} question={"Domanda"} answer={42} providedAnswers={[{playerName: "Edoardo"},{playerName:"Antonietta", providedAnswer: 10}]} />);
 

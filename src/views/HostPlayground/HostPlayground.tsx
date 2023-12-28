@@ -86,7 +86,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
         advanceToNextRound().then(setRoundState).catch(e => {
             setError(e)
         })
-    }, [])
+    }, [setRoundState])
 
     const triggerShowLeaderboard = useCallback(() => {
         serviceApi.triggerShowLeaderboard().then(() => {})

@@ -128,38 +128,6 @@ describe('Host Playground component', () => {
         await waitFor(() => expect(showResultsButton).not.toBeInTheDocument())
     })
 
-    it('should trigger assignment of points', async () => {
-        jest.spyOn(serviceApi, 'getRound').mockResolvedValue({
-            status: 200,
-            roundNumber: 1,
-            roundStatus: RoundStatus.DISPLAYING_ANSWERS,
-            question: "Domanda",
-            answer: 42,
-            providedAnswers: []
-        });
-
-        jest.spyOn(serviceApi, 'awardPoints').mockResolvedValue({
-            status: 200,
-            roundNumber: 1,
-            roundStatus: RoundStatus.ENDED,
-            question: "Domanda",
-            answer: 42,
-            providedAnswers: []
-        })
-
-        const {getByText} = render(<HostPlayground />);
-
-        await waitFor(() => {
-            getByText('Assegna i punti')
-        })
-
-        const awardPointsButton = getByText('Assegna i punti')
-        fireEvent.click(awardPointsButton)
-
-        expect(serviceApi.awardPoints).toHaveBeenCalled();
-        await waitFor(() => expect(awardPointsButton).not.toBeInTheDocument())
-    })
-
     it('should fetch round status every second and print any provided answer when round is in progress', async () => {
         jest.useFakeTimers()
         jest.spyOn(serviceApi, 'getRound').mockResolvedValueOnce({

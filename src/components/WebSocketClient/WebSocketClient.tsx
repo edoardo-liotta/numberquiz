@@ -87,7 +87,7 @@ const WebSocketClient: React.FC<WebSocketClientProps> = ({
 };
 
 WebSocketClient.defaultProps = {
-    isDebug: true,
+    isDebug: false,
     latestMessage: undefined
 }
 
