@@ -1,0 +1,114 @@
+.surface-dial-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.surface-dial {
+  position: relative;
+  border-radius: 9999px;
+  background-color: #1f2937;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 75ms ease-out;
+}
+
+.surface-dial:not(.disabled) {
+  cursor: grab;
+}
+
+.surface-dial:not(.disabled):active {
+  cursor: grabbing;
+}
+
+.surface-dial:not(.disabled).rotating {
+  transform: scale(1.02);
+}
+
+.surface-dial:not(.disabled):hover {
+  transform: scale(1.01);
+}
+
+.surface-dial.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.surface-dial.at-limit {
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5);
+}
+
+.surface-dial-marker {
+  position: absolute;
+  width: 16.666667%;
+  height: 0.5rem;
+  border-radius: 9999px;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  transition: background-color 150ms;
+}
+
+.surface-dial-marker.at-limit {
+  background-color: rgb(248, 113, 113);
+}
+
+.surface-dial-marker.disabled {
+  opacity: 0.4;
+}
+
+.surface-dial-gradient {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+}
+
+.surface-dial-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.surface-dial-value.disabled {
+  opacity: 0.5;
+}
+
+.dial-header-text {
+  border-color: #4caf50;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 2px;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  width: 95%;
+}
+
+.dial-header-text h1 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.dial-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border: none;
+  border-radius: 50%;
+  background-color: #4caf50;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  #box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-transform: inherit;
+}
+
+.dial-button.dial-submit-button {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  margin: 8px;
+  border-radius: 10px;
+}
