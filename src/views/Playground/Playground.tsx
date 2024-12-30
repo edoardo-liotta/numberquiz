@@ -7,6 +7,7 @@ import {getDeviceId, getPlayerId} from "../../api/config-api";
 import './Playground.css'
 
 interface PlaygroundProps {
+    gameId: string,
     initialQuestion?: string;
     isDebug?: boolean;
 }
@@ -20,6 +21,8 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
     const [error, setError] = React.useState<Error | undefined>()
     const [latestMessage, setLatestMessage] = React.useState<string>()
     const [currentQuestion, setCurrentQuestion] = React.useState<string | undefined>(props.initialQuestion)
+
+    const {gameId} = props;
 
     const handleSocketConnected = useCallback((socket: WebSocket) => {
         socket.send(`register-player|${getDeviceId()}|${getPlayerId()}`)
@@ -45,7 +48,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
         setError(undefined)
         if (!isDialDisabled) {
             setIsDialDisabled(true);
-            sendAnswer(props.value).then(() => {
+            sendAnswer(gameId, props.value).then(() => {
                 console.log("Answer sent successfully")
             })
                 .catch(e => {

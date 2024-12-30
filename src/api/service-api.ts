@@ -45,8 +45,8 @@ export const createSocketConnection = (gameId: string = String(1)) => {
   return new WebSocket(`${(url.protocol === "https:" ? "wss" : "ws")}://${url.host}/connect?gameId=${gameId}`);
 }
 
-export const sendAnswer = async (answer: number): Promise<ApiResponse> => {
-  return fetch(`${(getServiceUrl())}/answer`, {
+export const sendAnswer = async (gameId: string, answer: number): Promise<ApiResponse> => {
+  return fetch(`${(getServiceUrl())}/game/${gameId}/answer`, {
     method: "POST",
     body: JSON.stringify({
       playerId: getDeviceId(),

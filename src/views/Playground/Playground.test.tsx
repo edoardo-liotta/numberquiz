@@ -32,14 +32,14 @@ describe('Playground view', () => {
     });
 
     it('should send the value to the server when the submit button is clicked', () => {
-        const {getByText} = render(<Playground initialQuestion={"Number Quiz"} />);
+        const {getByText} = render(<Playground gameId={"1"} initialQuestion={"Number Quiz"} />);
         const addButton = getByText('+');
         const submitButton = getByText('Conferma');
 
         fireEvent.click(addButton);
         fireEvent.click(submitButton);
 
-        expect(serviceApi.sendAnswer).toHaveBeenCalledWith(1);
+        expect(serviceApi.sendAnswer).toHaveBeenCalledWith("1", 1);
     });
 
     it('should restore the submit button if something occurred when sending data', async () => {
@@ -47,7 +47,7 @@ describe('Playground view', () => {
             return Promise.reject()
         });
 
-        const component = render(<Playground initialQuestion={"Number Quiz"} />);
+        const component = render(<Playground gameId={"1"} initialQuestion={"Number Quiz"} />);
         const addButton = component.getByText('+');
         const submitButton = component.getByText('Conferma');
 
@@ -60,7 +60,7 @@ describe('Playground view', () => {
     });
 
     it('should show the Idle screen when the is no set question', () => {
-        const component = render(<Playground />);
+        const component = render(<Playground gameId={"1"} />);
         const idleText = component.getByText('In attesa di una domanda...');
 
         expect(idleText).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe('Playground view', () => {
 
     it('should show the question when it is set', async () => {
         jest.useFakeTimers()
-        const component = render(<Playground />);
+        const component = render(<Playground gameId={"1"} />);
 
         await act(() => {
             mockServer.emit('message', 'set-question|How many fingers are in a hand?');
@@ -81,7 +81,7 @@ describe('Playground view', () => {
 
     it('should clear the question when socket triggers clear', async () => {
         jest.useFakeTimers()
-        const component = render(<Playground initialQuestion={"Initial question"} />);
+        const component = render(<Playground gameId={"1"} initialQuestion={"Initial question"} />);
         let questionText = component.getByText('Initial question');
         expect(questionText).toBeInTheDocument();
 

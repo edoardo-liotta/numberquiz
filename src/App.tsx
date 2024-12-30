@@ -20,7 +20,7 @@ function App() {
             <HashRouter>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/play" element={<PlayerApp />} />
+                    <Route path="/play" element={<PlayerApp gameId={gameId} />} />
                     <Route path="/host" element={<HostApp gameId={gameId} />} />
                     <Route path="/screen" element={<ScreenApp gameId={gameId} />} />
                     <Route path="/welcome" element={<WelcomeApp />} />
