@@ -49,7 +49,7 @@ describe('Host Playground component', () => {
     });*/
 
     it('should fetch the status information when loaded', async () => {
-        const {getByText} = render(<HostPlayground />);
+        const {getByText} = render(<HostPlayground gameId="1" />);
 
         expect(serviceApi.getRound).toHaveBeenCalled();
 
@@ -57,7 +57,7 @@ describe('Host Playground component', () => {
     });
 
     it('should start the round when clicking the button', async () => {
-        const {getByText} = render(<HostPlayground />);
+        const {getByText} = render(<HostPlayground gameId="1" />);
 
         await waitFor(() => {
             getByText('Inizia il round')
@@ -83,7 +83,7 @@ describe('Host Playground component', () => {
             providedAnswers: []
         });
 
-        const {getByText} = render(<HostPlayground />);
+        const {getByText} = render(<HostPlayground gameId="1" />);
 
         await waitFor(() => {
             getByText('Termina il round')
@@ -115,7 +115,7 @@ describe('Host Playground component', () => {
             providedAnswers: []
         })
 
-        const {getByText} = render(<HostPlayground />);
+        const {getByText} = render(<HostPlayground gameId="1" />);
 
         await waitFor(() => {
             getByText('Rivela la risposta')
@@ -162,7 +162,7 @@ describe('Host Playground component', () => {
                 providedAnswer: 42
             }]
         });
-        const {getByText} = render(<HostPlayground />);
+        const {getByText} = render(<HostPlayground gameId="1" />);
         await waitFor(() => {
             getByText('Inizia il round')
         })
@@ -195,7 +195,7 @@ describe('Host Playground component', () => {
             providedAnswers: [{playerName: "Edoardo"}, {playerName: "Antonietta", providedAnswer: 10}]
         })
 
-        const {getByText} = render(<HostPlayground />);
+        const {getByText} = render(<HostPlayground gameId="1" />);
         await waitFor(() => {
             getByText('Rivela la risposta')
         })

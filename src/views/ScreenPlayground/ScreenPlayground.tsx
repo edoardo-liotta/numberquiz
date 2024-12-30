@@ -65,7 +65,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
                     setError(e)
                 })
             } else {
-                getLeaderboard().then(showLeaderboard).catch(e => {
+                getLeaderboard(props.gameId).then(showLeaderboard).catch(e => {
                     setError(e)
                 })
             }
@@ -75,7 +75,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
                 setError(e)
             })
         } else if (message.startsWith("show-leaderboard")) {
-            getLeaderboard().then(showLeaderboard).catch(e => {
+            getLeaderboard(props.gameId).then(showLeaderboard).catch(e => {
                 setError(e)
             })
         }

@@ -21,7 +21,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/play" element={<PlayerApp />} />
-                    <Route path="/host" element={<HostApp />} />
+                    <Route path="/host" element={<HostApp gameId={gameId} />} />
                     <Route path="/screen" element={<ScreenApp gameId={gameId} />} />
                     <Route path="/welcome" element={<WelcomeApp />} />
                     <Route path="/countertest"
