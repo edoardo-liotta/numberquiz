@@ -31,7 +31,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
     const fetchInterval = useRef<NodeJS.Timeout | null>(null);
 
     const joinLink = useMemo(() => {
-        return getClientUrl() + "/#/welcome?serviceUrl=" + encodeURIComponent(getServiceUrl())
+        return getClientUrl() + `/#/welcome?gameId=${props.gameId}&serviceUrl=` + encodeURIComponent(getServiceUrl())
     }, [])
 
     const setRoundState = useCallback((roundResponse: RoundResponse) => {
