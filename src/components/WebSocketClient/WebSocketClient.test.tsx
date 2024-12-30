@@ -30,7 +30,7 @@ describe('WebSocketClient', () => {
         const mockOnMessageReceived = jest.fn();
         // Render the component
         await act(() => {
-            render(<WebSocketClient onMessageReceived={mockOnMessageReceived} />);
+            render(<WebSocketClient gameId={"1"} onMessageReceived={mockOnMessageReceived} />);
         });
 
         await act(() => {
@@ -47,7 +47,7 @@ describe('WebSocketClient', () => {
         jest.useFakeTimers()
         // Render the component
         await act(() => {
-            render(<WebSocketClient onMessageReceived={jest.fn()} />);
+            render(<WebSocketClient gameId={"1"} onMessageReceived={jest.fn()} />);
         });
 
         expect(createSocketConnectionMock).toHaveBeenCalledTimes(1);

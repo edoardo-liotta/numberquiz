@@ -40,9 +40,9 @@ export interface PlayerScore {
     totalScore: number;
 }
 
-export const createSocketConnection = () => {
+export const createSocketConnection = (gameId: string = String(1)) => {
     const url = new URL(getServiceUrl());
-    return new WebSocket(`${(url.protocol === "https:" ? "wss" : "ws")}://${url.host}/connect`);
+    return new WebSocket(`${(url.protocol === "https:" ? "wss" : "ws")}://${url.host}/connect?gameId=${gameId}`);
 }
 
 export const sendAnswer = async (answer: number): Promise<ApiResponse> => {

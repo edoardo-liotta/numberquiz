@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {HashRouter, Link, Route, Routes} from "react-router-dom";
+import {HashRouter, Link, Route, Routes, useLocation} from "react-router-dom";
 import PlayerApp from "./PlayerApp";
 import HostApp from "./HostApp";
 import ScreenApp from "./ScreenApp";
@@ -12,6 +12,9 @@ import ScreenLeaderboard from "./components/ScreenLeaderboard/ScreenLeaderboard"
 
 function App() {
 
+  const query = new URLSearchParams(useLocation().search);
+  const gameId = query.get('gameId') || "1";
+
     return (
         <div>
             <HashRouter>
@@ -19,7 +22,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/play" element={<PlayerApp />} />
                     <Route path="/host" element={<HostApp />} />
-                    <Route path="/screen" element={<ScreenApp />} />
+                    <Route path="/screen" element={<ScreenApp gameId={gameId} />} />
                     <Route path="/welcome" element={<WelcomeApp />} />
                     <Route path="/countertest"
                            element={<ScreenRound roundNumber={1} roundStatus={RoundStatus.DISPLAYING_ANSWERS}

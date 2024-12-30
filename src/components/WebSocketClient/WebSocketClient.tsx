@@ -3,10 +3,11 @@ import {createSocketConnection} from "../../api/service-api";
 import './WebSocketClient.css';
 
 interface WebSocketClientProps {
+    gameId: string,
+    onMessageReceived: (message: string) => void;
     isDebug?: boolean;
     latestMessage?: string;
     onSocketConnected?: (socket: WebSocket) => void;
-    onMessageReceived: (message: string) => void;
 }
 
 const WebSocketClient: React.FC<WebSocketClientProps> = ({

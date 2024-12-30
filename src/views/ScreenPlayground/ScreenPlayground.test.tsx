@@ -7,7 +7,7 @@ import {Server} from "mock-socket";
 import ScreenPlayground from "./ScreenPlayground";
 
 describe('Screen Playground component', () => {
-    let createSocketConnectionMock: jest.SpyInstance<WebSocket, []>;
+    let createSocketConnectionMock: jest.SpyInstance<WebSocket, [gameId?: string | undefined]>;
     let mockServer: Server;
 
     beforeEach(() => {
@@ -35,14 +35,14 @@ describe('Screen Playground component', () => {
         mockServer.stop();
     });
     it('should fetch the status information when loaded', async () => {
-        const component = render(<ScreenPlayground />);
+        const component = render(<ScreenPlayground gameId="1" />);
         await waitFor(() => component.container.querySelector('div'))
         expect(serviceApi.getRound).toHaveBeenCalled();
     })
 
     it('should fetch the status information when a WebSocket message is triggered', async () => {
         jest.useFakeTimers()
-        render(<ScreenPlayground />);
+        render(<ScreenPlayground gameId="1" />);
 
         await act(() => {
             mockServer.emit('message', 'show-round');
@@ -86,7 +86,7 @@ describe('Screen Playground component', () => {
                 providedAnswer: 42
             }]
         });
-        const component = render(<ScreenPlayground />);
+        const component = render(<ScreenPlayground gameId="1" />);
         await act(() => {
             component.container.querySelector('div')
         })
@@ -110,7 +110,7 @@ describe('Screen Playground component', () => {
         jest.spyOn(configApi, 'getClientUrl').mockImplementation(() => "http://client.url")
         jest.spyOn(configApi, 'getServiceUrl').mockImplementation(() => "http://server.url")
 
-        const {container, findByText} = render(<ScreenPlayground />);
+        const {container, findByText} = render(<ScreenPlayground gameId="1" />);
         expect(container.querySelector('div#screen-qrcode-container')).toBeInTheDocument();
         const findByText1 = await act(() => findByText("http://client.url/#/welcome?serviceUrl=http%3A%2F%2Fserver.url"));
         expect(findByText1).toBeInTheDocument();
@@ -156,7 +156,7 @@ describe('Screen Playground component', () => {
             ]
         })
 
-        const {getByText} = render(<ScreenPlayground />);
+        const {getByText} = render(<ScreenPlayground gameId="1" />);
 
         await act(() => mockServer.emit('message', 'show-leaderboard'));
         await act(() => jest.advanceTimersByTime(1000))

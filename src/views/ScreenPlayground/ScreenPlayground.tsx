@@ -15,6 +15,7 @@ import {getClientUrl, getServiceUrl} from "../../api/config-api";
 import "./ScreenPlayground.css"
 
 interface ScreenPlaygroundProps {
+    gameId: string
     isDebug?: boolean;
 }
 
@@ -111,7 +112,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
         <div id={"screen-qrcode-container"}>
             <QRCodeGenerator url={joinLink} />
         </div>
-        <WebSocketClient onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} />
+        <WebSocketClient gameId={props.gameId} onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} />
     </>
 }
 
