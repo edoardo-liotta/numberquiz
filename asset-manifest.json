@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/numberquiz/static/css/main.d59f604b.css",
+    "main.js": "/numberquiz/static/js/main.864aacc9.js",
+    "static/js/787.6cbf8559.chunk.js": "/numberquiz/static/js/787.6cbf8559.chunk.js",
+    "index.html": "/numberquiz/index.html",
+    "main.d59f604b.css.map": "/numberquiz/static/css/main.d59f604b.css.map",
+    "main.864aacc9.js.map": "/numberquiz/static/js/main.864aacc9.js.map",
+    "787.6cbf8559.chunk.js.map": "/numberquiz/static/js/787.6cbf8559.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d59f604b.css",
+    "static/js/main.864aacc9.js"
+  ]
+}
