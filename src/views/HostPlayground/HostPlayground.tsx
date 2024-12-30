@@ -44,7 +44,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
     if ([RoundStatus.STARTED, RoundStatus.STOPPING].includes(roundResponse.roundStatus)) {
       if (fetchInterval.current === null) {
         fetchInterval.current = setInterval(() => {
-          getRound().then(setRoundState).catch(e => {
+          getRound(gameId).then(setRoundState).catch(e => {
             setError(e)
           })
         }, 1000)
@@ -103,7 +103,7 @@ const HostPlayground: React.FC<HostPlaygroundProps> = (props: HostPlaygroundProp
 
   useEffect(() => {
     setError(undefined)
-    getRound().then(setRoundState).catch(e => {
+    getRound(props.gameId).then(setRoundState).catch(e => {
       setError(e)
     })
     return () => {

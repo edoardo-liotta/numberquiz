@@ -61,7 +61,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
         setLatestMessage(message)
         if (message.startsWith("update")) {
             if (roundNumber) {
-                getRound().then(setRoundState).catch(e => {
+                getRound(props.gameId).then(setRoundState).catch(e => {
                     setError(e)
                 })
             } else {
@@ -71,7 +71,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
             }
         }
         else if (message.startsWith("show-round")) {
-            getRound().then(setRoundState).catch(e => {
+            getRound(props.gameId).then(setRoundState).catch(e => {
                 setError(e)
             })
         } else if (message.startsWith("show-leaderboard")) {
@@ -86,7 +86,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
             console.log("fetch interval: " + fetchInterval.current)
             if (fetchInterval.current === null) {
                 fetchInterval.current = setInterval(() => {
-                    getRound().then(setRoundState).catch(e => {
+                    getRound(props.gameId).then(setRoundState).catch(e => {
                         setError(e)
                     })
                 }, 1000)
@@ -101,7 +101,7 @@ const ScreenPlayground: React.FC<ScreenPlaygroundProps> = (props: ScreenPlaygrou
 
     useEffect(() => {
         if (roundNumber) {
-            getRound().then(setRoundState).catch(e => {
+            getRound(props.gameId).then(setRoundState).catch(e => {
                 setError(e)
             })
         }

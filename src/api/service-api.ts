@@ -40,7 +40,7 @@ export interface PlayerScore {
   totalScore: number;
 }
 
-export const createSocketConnection = (gameId: string = String(1)) => {
+export const createSocketConnection = (gameId: string) => {
   const url = new URL(getServiceUrl());
   return new WebSocket(`${(url.protocol === "https:" ? "wss" : "ws")}://${url.host}/connect?gameId=${gameId}`);
 }
@@ -69,8 +69,8 @@ export const sendAnswer = async (gameId: string, answer: number): Promise<ApiRes
   })
 };
 
-export const getRound = async (): Promise<RoundResponse> => {
-  return fetch(`${(getServiceUrl())}/round`, {
+export const getRound = async (gameId: string): Promise<RoundResponse> => {
+  return fetch(`${(getServiceUrl())}/game/${gameId}/round`, {
     method: "GET",
     headers: {
       "Accept": "application/json",

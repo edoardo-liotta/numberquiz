@@ -3,93 +3,94 @@ import {createSocketConnection} from "../../api/service-api";
 import './WebSocketClient.css';
 
 interface WebSocketClientProps {
-    gameId: string,
-    onMessageReceived: (message: string) => void;
-    isDebug?: boolean;
-    latestMessage?: string;
-    onSocketConnected?: (socket: WebSocket) => void;
+  gameId: string,
+  onMessageReceived: (message: string) => void;
+  isDebug?: boolean;
+  latestMessage?: string;
+  onSocketConnected?: (socket: WebSocket) => void;
 }
 
 const WebSocketClient: React.FC<WebSocketClientProps> = ({
-                                                             isDebug,
-                                                             latestMessage,
-                                                             onSocketConnected,
-                                                             onMessageReceived
+                                                           gameId,
+                                                           isDebug,
+                                                           latestMessage,
+                                                           onSocketConnected,
+                                                           onMessageReceived
                                                          }) => {
-    const socketRef = useRef<WebSocket | null>(null);
-    const [statusMessage, setStatusMessage] = React.useState<string>("Disconnected");
+  const socketRef = useRef<WebSocket | null>(null);
+  const [statusMessage, setStatusMessage] = React.useState<string>("Disconnected");
 
-    const disconnect = useCallback(() => {
-        setStatusMessage("Disconnected")
-        if (socketRef.current) {
-            try {
-                socketRef.current.close();
-            } catch (e) {
-                console.log("Error closing WebSocket connection");
-                console.log(e);
-            }
-            socketRef.current = null;
+  const disconnect = useCallback(() => {
+    setStatusMessage("Disconnected")
+    if (socketRef.current) {
+      try {
+        socketRef.current.close();
+      } catch (e) {
+        console.log("Error closing WebSocket connection");
+        console.log(e);
+      }
+      socketRef.current = null;
+    }
+  }, [])
+
+  const connect = useCallback(() => {
+    if (!socketRef.current) {
+      setStatusMessage("Connecting...");
+      const socketConnection = createSocketConnection(gameId);
+
+      // Handle connection open event
+      socketConnection.onopen = () => {
+        console.log('WebSocket client connected');
+        socketRef.current = socketConnection;
+        setStatusMessage("Connected");
+        if (onSocketConnected && socketRef.current) {
+          onSocketConnected(socketRef.current);
         }
-    }, [])
+      };
 
-    const connect = useCallback(() => {
-        if (!socketRef.current) {
-            setStatusMessage("Connecting...");
-            const socketConnection = createSocketConnection();
+      // Handle incoming message event
+      socketConnection.onmessage = (event) => {
+        onMessageReceived(event.data);
+      };
 
-            // Handle connection open event
-            socketConnection.onopen = () => {
-                console.log('WebSocket client connected');
-                socketRef.current = socketConnection;
-                setStatusMessage("Connected");
-                if (onSocketConnected && socketRef.current) {
-                    onSocketConnected(socketRef.current);
-                }
-            };
+      socketConnection.onerror = (event) => {
+        console.log("WebSocket error");
+        console.log(event.target);
+        disconnect()
+      };
 
-            // Handle incoming message event
-            socketConnection.onmessage = (event) => {
-                onMessageReceived(event.data);
-            };
+      socketConnection.onclose = () => {
+        console.log("Closing WebSocket connection");
+        disconnect()
+      }
+    }
+  }, [disconnect, onSocketConnected, onMessageReceived])
 
-            socketConnection.onerror = (event) => {
-                console.log("WebSocket error");
-                console.log(event.target);
-                disconnect()
-            };
+  useEffect(() => {
+    // Create a new WebSocket connection
+    connect();
 
-            socketConnection.onclose = () => {
-                console.log("Closing WebSocket connection");
-                disconnect()
-            }
-        }
-    }, [disconnect, onSocketConnected, onMessageReceived])
+    // Clean up on component unmount
+    return () => {
+      disconnect();
+    };
+  }, [connect, disconnect, onSocketConnected, onMessageReceived]);
 
-    useEffect(() => {
-        // Create a new WebSocket connection
-        connect();
-
-        // Clean up on component unmount
-        return () => {
-            disconnect();
-        };
-    }, [connect, disconnect, onSocketConnected, onMessageReceived]);
-
-    return <>
-        <div id={"websocketclient-status"}>WebSocket Client: {statusMessage}
-        {statusMessage === "Disconnected" && <>
-            &nbsp;<span className={"reconnect"} onClick={connect}>Connect</span>
-            </>}
-        </div>
-        {isDebug && latestMessage && <>
-          <div>Latest message: {latestMessage}</div>
-        </>}
-    </>;
+  return <>
+    <div id={"websocketclient-status"}>WebSocket Client: {statusMessage}
+      {statusMessage === "Disconnected" && <>
+          &nbsp;<span className={"reconnect"} onClick={connect}>Connect</span>
+      </>}
+    </div>
+    {isDebug && latestMessage && <>
+        <div>Latest message: {latestMessage}</div>
+    </>}
+  </>;
 };
 
 WebSocketClient.defaultProps = {
-    isDebug: false,
-    latestMessage: undefined
+  isDebug: false,
+  latestMessage: undefined
 }
 
 export default WebSocketClient;

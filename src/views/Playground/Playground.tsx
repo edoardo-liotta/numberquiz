@@ -73,7 +73,7 @@ const Playground: React.FC<PlaygroundProps> = (props: PlaygroundProps) => {
                 </>}
             </>}
         </div>
-        <WebSocketClient gameId={"1"} onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} />
+        <WebSocketClient gameId={gameId} onSocketConnected={handleSocketConnected} onMessageReceived={handleMessageReceived} />
         <div className={"playground-vertical"}>Ruota lo schermo in orizzontale</div>
     </>
 }

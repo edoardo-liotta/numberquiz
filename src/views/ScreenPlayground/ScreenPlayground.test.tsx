@@ -7,7 +7,7 @@ import {Server} from "mock-socket";
 import ScreenPlayground from "./ScreenPlayground";
 
 describe('Screen Playground component', () => {
-    let createSocketConnectionMock: jest.SpyInstance<WebSocket, [gameId?: string | undefined]>;
+    let createSocketConnectionMock: jest.SpyInstance<WebSocket, [gameId: string]>;
     let mockServer: Server;
 
     beforeEach(() => {
